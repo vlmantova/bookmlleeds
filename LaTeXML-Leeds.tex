@@ -85,6 +85,8 @@
   \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \verb|\lxHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
 \end{enumerate}
 
+\section{How to compile this example}
+The commands below will use MathJax v3.0.
 \begin{lstlisting}[language=bash,caption={Generate the PDF}]
   latexmk LaTeXML-Leeds
 \end{lstlisting}
@@ -111,10 +113,8 @@
 \section{Documentation}
 
 \subsection{The \texttt{latexml} package}
-First, ensure you import the packages in your preamble:
-\begin{lstlisting}[language=TeX,caption={Import packages in the preamble}]
+\begin{lstlisting}[language=TeX,caption={Import \texttt{latexml} in the preamble}]
   \usepackage[nocomments]{latexml}
-  \usepackage{latexmlleeds}
 \end{lstlisting}
 
 The package \verb|latexml| takes some options that will be passed to the \LaTeXML{} engine, such as \verb|nocomment| (that strips the \verb|%| comments away) or \verb|mathparsespeculate|. Moreover, it offers a variety of commands. The most important one:
@@ -143,17 +143,21 @@ The package \verb|latexml| takes some options that will be passed to the \LaTeXM
   \end{quote}
 \end{exa}
 
-For reference, \verb|latexml| also defines the following, although you can work very well without them.
+For reference, \verb|latexml| also defines the following, although you can work very well without them. Just open \verb|latexml.sty| (it is very short) to see all the commands, a bit of documentation in the comments, and the occasional example. The \href{https://github.com/brucemiller/LaTeXML/tree/master/doc/manual}{source} of the \LaTeXML{} documentation is also a source of examples.
 \begin{itemize}
   \item \verb|\lxAddClass{class}| and \verb|\lxWithClass{class}{content}| to add CSS classes to the output;
   \item \verb|\lxBeginTableHead|, \verb|\lxEndTableHead| and variations to mark table headers and footers (read the \verb|latexml.sty| source for how to use them);
-  \item \verb|\lxFcn{code}|, \verb|\lxID{code}|, \verb|\lxPunct{code}| to aid \LaTeXML{} understand the meaning of mathematical symbols (\LaTeXML{} recognises the meaning on its own, but every once in a while, there will be a symbol that is just too ambiguous -- just keep an eye on the warnings during compilation);
+  \item \verb|\lxFcn{code}|, \verb|\lxID{code}|, \verb|\lxPunct{code}| to help \LaTeXML{} understand the meaning of mathematical symbols (\LaTeXML{} recognises the meaning on its own, but every once in a while, there will be a symbol that is just too ambiguous -- just keep an eye on the warnings during compilation);
   \item \verb|\lxContextTOC|, \verb|\lxNavbar{arg}|, \verb|\lxHeader{arg}|, \verb|\lxFooter{arg}| to customise the HTML pages (I have yet to figure out how they work);
   \item and a few other commands.
 \end{itemize}
 
 \subsection{The \texttt{latexmlleeds} package}
-\verb|latexmlleeds| defines \verb|\lxHTML{html}|, which outputs the \verb|html| argument directly as \HTML{} code. The \verb|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file.
+\begin{lstlisting}[language=TeX,caption={Import \texttt{latexmlleeds} in the preamble}]
+  \usepackage{latexmlleeds}
+\end{lstlisting}
+
+\verb|latexmlleeds| defines \verb|\lxHTML{html}|, which outputs the \verb|html| argument directly as \HTML{} code. The \verb|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
 \begin{exa}
   Code:
   \begin{lstlisting}[language=TeX]
@@ -177,7 +181,7 @@ Some notes:
 \end{itemize}
 
 \begin{exa}[Embed Stream videos]\label{exa:embed-stream}
-  This is only a proof of concept: it embeds the video directly into \HTML{} and EPUB, and provides a link in all contexts (note that embedded videos may not work everywhere, especially with EPUB, so always include the link). The code is accompanied by some extra \CSS{} to make the video size responsive, however you must customize it to match the resolution of your videos (mine is $1280 \times 720$).
+  This is only a proof of concept, but already functional: it embeds a video directly into \HTML{} and EPUB, and provides a link in all contexts (note that embedded videos may not work everywhere, especially with EPUB, so always include the link). The code is accompanied by some extra \CSS{} inside \verb|latexmlleeds.css| to make the video size responsive, however you must customize it to match the resolution of your videos (mine is $1280 \times 720$).
   \begin{lstlisting}[language=TeX]
     % preamble
     \newcommand{\includestream}[2]{
@@ -187,7 +191,7 @@ Some notes:
           allowfullscreen="">
         </iframe>
       </div>}
-      Watch video \href{https://web.microsoftstream.com/video/#1}{#2}
+      Watch \href{https://web.microsoftstream.com/video/#1}{#2}
     }
     % document
     \includestream{ba6b8866-df29-4dea-a47e-13decc5cd409}
@@ -203,7 +207,7 @@ Some notes:
             allowfullscreen="">
           </iframe>
         </div>}
-      Watch video \href{https://web.microsoftstream.com/video/#1}{#2}
+      Watch \href{https://web.microsoftstream.com/video/#1}{#2}
     }
     \includestream{ba6b8866-df29-4dea-a47e-13decc5cd409}
     {Mock recording for Models and Sets}
@@ -211,7 +215,7 @@ Some notes:
 \end{exa}
 
 \subsection{The \texttt{latexmlleeds-html5.xsl} customisations}
-The \verb|latexmlleeds.xsl| \XSLT{} stylesheet does only three things:
+Normally, you do not need to care about this file. The \verb|latexmlleeds.xsl| \XSLT{} stylesheet does only three things:
 \begin{itemize}
   \item make sure you output HTML5 (which would be the default, anyway);
   \item it makes \HTML{} lists more accessible by ignoring custom enumerations (i.e., the \verb|(a)| in \verb|\item[(a)]|; you should modify your \CSS{} to do custom enumerations in \HTML{});
@@ -220,7 +224,7 @@ The \verb|latexmlleeds.xsl| \XSLT{} stylesheet does only three things:
 The \XSLT{} may be updated in the future to improve a few aspects of the resulting \HTML{}; for instance, we might discover that offloading the maths parsing entirely to MathJax is better overall, and this can only be done by tweaking the \XSLT{}.
 
 \subsection{The \texttt{latexmlleeds.css} customisations}
-For now, \verb|latexmlleeds.css|:
+This is where you can tweak the appearance of your \HTML{} files. For now, the basic \verb|latexmlleeds.css|
 \begin{itemize}
   \item sets the font to sans serif (trying to pick the best font available);
   \item reduces the margins to a minimum;
@@ -233,11 +237,12 @@ This styling has only been tested with the \verb|article| class and on Edge and 
 
 \section{Good practices}
 \begin{itemize}
-  \item follow Martin's recommendations about fonts, tables, margins, and so on;
-  \item use semantic \LaTeX{} commands as much as possible (\verb|\chapter|, \verb|\section|, \verb|\newtheorem|).
+  \item Follow Martin's recommendations about fonts, tables, margins, and so on.
+  \item Use semantic \LaTeX{} commands as much as possible (\verb|\chapter|, \verb|\section|, \verb|\newtheorem|).
+  \item Although not strictly needed, it is better to restrict yourself to MathJax supported commands in math mode. In this way the students will be able to copy and paste your \TeX{} code from the lecture notes to the discussion boards, once they learn how to do so. See the MathJax documentation for the full list.
 \end{itemize}
 
-\section{References}
+\section{Other documentation}
 \begin{itemize}
   \item \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation}
   \item List of packages \href{https://dlmf.nist.gov/LaTeXML/manual/included.bindings/}{supported by \LaTeXML{}} (note that some implementations are not complete)
