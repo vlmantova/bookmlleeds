@@ -38,15 +38,52 @@
 
 \tableofcontents
 
-\section{How to compile}
-First, make sure that the required files are next to the \verb|.tex| source.
-\begin{itemize}
-  \item \verb|latexmlleeds.sty|
-  \item \verb|latexmlleeds.sty.ltxml|
-  \item \verb|latexmlleeds.css|
-  \item \verb|latexmlleeds-html5.xsl|
-  \item \verb|latexml.sty| if your \TeX{} installation does not pick it up automatically
-\end{itemize}
+\section{Quick guide to \texttt{latexmlleeds}}
+\begin{enumerate}
+  \item Copy the files below next to the \verb|.tex| source.
+  \begin{itemize}
+    \item \verb|latexmlleeds.sty|
+    \item \verb|latexmlleeds.sty.ltxml|
+    \item \verb|latexmlleeds.css|
+    \item \verb|latexmlleeds-html5.xsl|
+    \item \verb|latexml.sty| if your \TeX{} installation does not pick it up automatically
+  \end{itemize}
+  You can download them from the \href{https://dev.azure.com/pmtvlm-leeds-ac-uk/public/_git/latexmlleeds}{\texttt{latexmlleeds} repository}, together with the \verb|.tex| source of this very document. Please submit a pull request if you have changes that should be made available to everyone (e.g.\ improved \CSS{}, other video or quiz embedding commands).
+  \item Add
+  \begin{lstlisting}[language=TeX]
+    \usepackage{latexml} % for \iflatexml and other goodies
+    \usepackage{latexmlleeds} % for \lxHTML, see below
+  \end{lstlisting}
+  to your preamble.
+  \item Run the command below and see if there are errors.
+  \begin{lstlisting}[language=bash]
+    latexml --destination=myfile.xml myfile.tex
+  \end{lstlisting}
+  If you are lucky, there will be no errors at all. If you get errors, you will have to adjust your \LaTeX{}. You can use \verb|\iflatexml| to run different code under \verb|latexml| -- this is useful if your problems come from packages that are useful only when compiling to PDF.
+  \begin{lstlisting}[language=TeX]
+    \iflatexml
+      % code only executed by latexml
+    \else
+      % code only executed by the other engines
+    \fi
+  \end{lstlisting}
+  \LaTeXML{} should be able to handle images, but it may choke on TikZ. Read the Vincenzo's \texttt{README} among the \href{https://leeds365.sharepoint.com/sites/TEAM-SchoolofMathematits/Shared%20Documents/Discussion%20-%20Digital%20accessibility/LaTeXML%20Examples}{\LaTeXML{} examples} of the \href{https://teams.microsoft.com/l/channel/19%3aef28f45e3a2e43e88bf416dd94b1c654%40thread.tacv2/Discussion%2520-%2520Digital%2520accessibility?groupId=88aa0346-1c2e-4ac1-bbcc-3d6395bc0a5b&tenantId=bdeaeda8-c81d-45ce-863e-5232a535b7cb}{Digital accessibility channel} for an automated TikZ workaround.
+  \item If everything is good, you can conclude with
+  \begin{lstlisting}[language=bash]
+    % to create the final HTML
+    latexmlpost \
+      --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"\
+      --mathtex --stylesheet=latexmlleeds-html5.xsl \
+      --css=latexmlleeds.css --destination=myfile.html \
+      --svg myfile.xml
+
+    % to create the EPUB
+    latexmlc --splitat=chapter --css=latexmlleeds.css \
+      --svg --destination=myfile.epub myfile.tex
+  \end{lstlisting}
+  The option \verb|--splitat=| can split the output in various ways (part, chapter, section\dots{}) according to your needs. You \textbf{must} split long lecture notes, otherwise MathJax will take ages to render your formulas and EPUB readers will spend a long time paginating the content.
+  \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \verb|\lxHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
+\end{enumerate}
 
 \begin{lstlisting}[language=bash,caption={Generate the PDF}]
   latexmk LaTeXML-Leeds
