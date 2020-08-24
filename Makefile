@@ -1,8 +1,13 @@
-.PHONY: all
+.PHONY: all clean
 
 .PRECIOUS: %.xml
 
-all: LaTeXML-Leeds.html LaTeXML-Leeds.epub LaTeXML-Leeds.pdf
+TARGETS=LaTeXML-Leeds.html LaTeXML-Leeds.epub LaTeXML-Leeds.pdf
+
+all: $(TARGETS)
+
+clean:
+	-rm -f $(TARGETS)
 
 %.epub: %.tex
 	latexmlc --splitat=chapter --css=latexmlleeds.css \
