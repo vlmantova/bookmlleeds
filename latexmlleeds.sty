@@ -1,0 +1,27 @@
+% /=====================================================================\ %
+% |  latexmlleeds.sty                                                   | %
+% | Style file for Leeds tweaks to latexml documents                    | %
+% |=====================================================================| %
+% | Vincenzo Mantova <v.l.mantova@leeds.ac.uk>                          | %
+% \=====================================================================/ %
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{latexmlleeds}[2020/08/24 Leeds tweaks to latexml documents]
+
+% We need T1 font encoding to parse correctly < and >
+\RequirePackage[T1]{fontenc}
+
+% Do nothing in normal LaTeX, output argument as HTML in LaTeXML
+\let\lxHTML\@gobble
+
+% Example:
+% \lxHTML{This appears <strong>only in the HTML-based outputs</strong>.}
+
+%%% NOTES
+%
+% 1. The HTML must be written in "XML serialisation", hence all tags must
+%    be closed (e.g. <br> must be written as <br/>).
+%
+% 2. The HTML is still interpreted as LaTeX code, hence it must be escaped
+%    appropriately. For instance, every { must be replaced by \{; every &
+%    must be replaced by \& (and probably be written as \&amp;).

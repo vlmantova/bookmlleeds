@@ -1,0 +1,39 @@
+# /=====================================================================\
+# |  latexmlleeds.sty.ltxml                                             |
+# | Style file for Leeds tweaks to latexml documents - LaTeXML binding  |
+# |=====================================================================|
+# | Vincenzo Mantova <v.l.mantova@leeds.ac.uk>                          |
+# \=====================================================================/
+
+package LaTeXML::Leeds;
+use LaTeXML::Package;
+use XML::LibXML;
+# use HTML::HTML5::Parser;
+use strict;
+use warnings;
+
+# Ideally, we should use an HTML5 parser, however we want to minimise
+# the requirements, hence we stay with XML::LibXML
+# TODO detect at runtime if HTML::HTML5 is installed and use it
+# my $parser = HTML::HTML5::Parser->new(no_cache => 1);
+my $parser = XML::LibXML->new();
+
+RequirePackage('fontenc', options => ['T1']);
+
+DefMacro('\lxHTML{}', '');
+DefConstructor('\lxHTML{}',
+  sub {
+    my ($document, $arg) = @_;
+
+    # wrap in <span> to set the XHTML namespace
+    # (superfluous if using HTML::HTML5)
+    my $html = $parser->parse_balanced_chunk('<span xmlns="http://www.w3.org/1999/xhtml">' . $arg->toString() . '</span>');
+    my @elems = $html->firstChild->findnodes('*');
+
+    my $node = $document->openElement('ltx:rawhtml');
+    map { $document->appendClone($node, $_) } @elems;
+    $document->closeElement('ltx:rawhtml');
+  }
+);
+
+1;
