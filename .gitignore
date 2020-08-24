@@ -1,3 +1,11 @@
+## Build
+LaTeXML.css
+ltx-article.css
+ltx-listings.css
+*.epub
+*.html
+*.xml
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
