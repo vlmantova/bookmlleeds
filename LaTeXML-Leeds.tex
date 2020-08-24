@@ -112,6 +112,22 @@ The commands below will use MathJax v3.0.
     --svg LaTeXML-Leeds.xml
 \end{lstlisting}
 
+Meaning of the options:
+\begin{description}
+  \item[\texttt{--splitat=section}] Split the document into a separate \HTML{} page per section, linked to each other. The value can be chapter, section, subsection, subsubsection.
+  \item[\texttt{--css=latexmlleeds.css}] Import the \CSS{} \verb|latexmlleeds.css| in every page. It can be specified only once.
+  \item[\texttt{--javascript=...}] Import the desired Javascript. Use it to include MathJax v3.0 (as in the example above) or v2.7.
+  \item[\texttt{--stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: use the provided \verb|latexmlleeds-html5.xsl|.
+  \item[\texttt{--mathtex}] Preserve the original \TeX{} code in maths formulas as annotations. With MathJax, the code appears by right-clicking on the formula and choosing ``Show Math As > Annotation > TeX''.
+  \item[\texttt{--svg}] Instruct \LaTeXML{} to use SVG as image format when converting from vector images (such as PDF, EPS). I have not tested this in real life, and it may depend on having ImageMagick installed.
+\end{description}
+Further options that seem important enough (more will be added if they turn out to be relevant).
+\begin{description}
+  \item[\texttt{--navigationtoc=(context|none)}] The value used in this guide is the default (\verb|none|). The value \verb|context| should produce a traditional navigation bar with links to all the chapters, and additional links to sections in the current chapter. I have not tried it yet.
+\end{description}
+For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation} or run \verb|latexml --help|, \verb|latexmlpost --help|, \verb|latexmlc --help|.
+
+
 \section{Documentation}
 
 \subsection{The \texttt{latexml} package}
