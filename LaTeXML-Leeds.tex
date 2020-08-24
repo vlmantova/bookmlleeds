@@ -89,7 +89,8 @@
 \section{How to compile this example}
 The commands below will use MathJax v3.0.
 \begin{lstlisting}[language=bash,caption={Generate the PDF}]
-  latexmk LaTeXML-Leeds
+  % I use latexmk, but pdflatex or your preferred engine will work
+  latexmk -pdf LaTeXML-Leeds
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the EPUB}]
   latexmlc --splitat=chapter --css=latexmlleeds.css \
