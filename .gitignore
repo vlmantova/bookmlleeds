@@ -2,9 +2,9 @@
 LaTeXML.css
 ltx-article.css
 ltx-listings.css
-*.epub
-*.html
 *.xml
+latexmlleeds
+latexmlleeds.zip
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
