@@ -61,36 +61,36 @@
   You can download them from the \href{https://dev.azure.com/pmtvlm-leeds-ac-uk/public/_git/latexmlleeds}{\texttt{latexmlleeds} repository}, together with the \verb|.tex| source of this very document. Please submit a pull request if you have changes that should be made available to everyone (e.g.\ improved \CSS{}, other video or quiz embedding commands).
   \item Add
   \begin{lstlisting}[language=TeX]
-    \usepackage{latexml} % for \iflatexml and other goodies
-    \usepackage{latexmlleeds} % for \lxHTML, see below
+\usepackage{latexml} % for \iflatexml and other goodies
+\usepackage{latexmlleeds} % for \lxHTML, see below
   \end{lstlisting}
   to your preamble.
   \item Run the command below and see if there are errors.
   \begin{lstlisting}[language=bash]
-    latexml --destination=myfile.xml myfile.tex
+latexml --destination=myfile.xml myfile.tex
   \end{lstlisting}
   If you are lucky, there will be no errors at all. If you get errors, you will have to adjust your \LaTeX{}. You can use \verb|\iflatexml| to run different code under \verb|latexml| -- this is useful if your problems come from packages that are useful only when compiling to PDF.
   \begin{lstlisting}[language=TeX]
-    \iflatexml
-      % code only executed by latexml
-    \else
-      % code only executed by the other engines
-    \fi
+\iflatexml
+  % code only executed by latexml
+\else
+  % code only executed by the other engines
+\fi
   \end{lstlisting}
   \item Once everything is good, you can conclude with
   \begin{lstlisting}[language=bash]
-    # to create the final HTML...
-    latexmlpost \
-      --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"\
-      --mathtex --stylesheet=latexmlleeds-html5.xsl \
-      --css=latexmlleeds.css --destination=mynotes/myfile.html \
-      --svg myfile.xml
-    # ...and zip it for upload on Minerva
-    zip -r mynotes.zip mynotes
+# to create the final HTML...
+latexmlpost \
+  --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
+  --mathtex --stylesheet=latexmlleeds-html5.xsl \
+  --css=latexmlleeds.css --destination=mynotes/myfile.html \
+  --svg myfile.xml
+# ...and zip it for upload on Minerva
+zip -r mynotes.zip mynotes
 
-    # to create the EPUB
-    latexmlc --splitat=chapter --css=latexmlleeds.css \
-      --svg --destination=myfile.epub myfile.tex
+# to create the EPUB
+latexmlc --splitat=chapter --css=latexmlleeds.css \
+  --svg --destination=myfile.epub myfile.tex
   \end{lstlisting}
   I strongly recommend you put the output in a subfolder (the \verb|mynotes| in \verb|mynotes/myfile.html| above) since there will be additional files that need to travel together with the main \verb|myfile.html|.
 
@@ -101,41 +101,45 @@
 \section{How to compile this example}
 The commands below will use MathJax v3.0.
 \begin{lstlisting}[language=bash,caption={Generate the PDF}]
-  % I use latexmk, but pdflatex or your preferred engine will work
-  latexmk -pdf LaTeXML-Leeds
+# I use latexmk, but pdflatex or your preferred engine will work
+latexmk -pdf LaTeXML-Leeds
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the EPUB}]
-  latexmlc --splitat=chapter --css=latexmlleeds.css \
-    --destination=latexmlleeds/LaTeXML-Leeds.epub LaTeXML-Leeds.tex
+latexmlc --splitat=chapter --css=latexmlleeds.css \
+  --destination=latexmlleeds/LaTeXML-Leeds.epub LaTeXML-Leeds.tex
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the HTML}]
-  latexmlc \
-    --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
-    --mathtex --stylesheet=latexmlleeds-html5.xsl \
-    --css=latexmlleeds.css --destination=latexmlleeds/LaTeXML-Leeds.html \
-    --svg LaTeXML-Leeds.tex
+latexmlc \
+  --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
+  --mathtex --stylesheet=latexmlleeds-html5.xsl \
+  --css=latexmlleeds.css --destination=latexmlleeds/LaTeXML-Leeds.html \
+  --svg LaTeXML-Leeds.tex
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the HTML in two steps}]
-  latexml --destination=LaTeXML-Leeds.xml LaTeXML-Leeds.tex
-  latexmlpost \
-    --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"\
-    --mathtex --stylesheet=latexmlleeds-html5.xsl \
-    --css=latexmlleeds.css --destination=latexmlleeds/LaTeXML-Leeds.html \
-    --svg LaTeXML-Leeds.xml
+latexml --destination=LaTeXML-Leeds.xml LaTeXML-Leeds.tex
+latexmlpost \
+  --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
+  --mathtex --stylesheet=latexmlleeds-html5.xsl \
+  --css=latexmlleeds.css --destination=latexmlleeds/LaTeXML-Leeds.html \
+  --svg LaTeXML-Leeds.xml
+\end{lstlisting}
+\begin{lstlisting}[language=bash,caption={Do all the above steps in one go}]
+# This uses the Makefile included in latexmlleeds
+make
 \end{lstlisting}
 
 Meaning of the options:
 \begin{description}
-  \item[\texttt{--splitat=section}] Split the document into a separate \HTML{} page per section, linked to each other. The value can be chapter, section, subsection, subsubsection.
-  \item[\texttt{--css=latexmlleeds.css}] Import the \CSS{} \verb|latexmlleeds.css| in every page. It can be specified only once.
-  \item[\texttt{--javascript=...}] Import the desired Javascript. Use it to include MathJax v3.0 (as in the example above) or v2.7.
-  \item[\texttt{--stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: use the provided \verb|latexmlleeds-html5.xsl|.
-  \item[\texttt{--mathtex}] Preserve the original \TeX{} code in maths formulas as annotations. With MathJax, the code appears by right-clicking on the formula and choosing ``Show Math As > Annotation > TeX''.
-  \item[\texttt{--svg}] Instruct \LaTeXML{} to use SVG as image format when converting from vector images (such as PDF, EPS). I have not tested this in real life, and it may depend on having ImageMagick installed.
+  \item[\texttt{{-}{-}splitat=section}] Split the document into a separate \HTML{} page per section, linked to each other. The value can be chapter, section, subsection, subsubsection.
+  \item[\texttt{{-}{-}css=latexmlleeds.css}] Import the \CSS{} \verb|latexmlleeds.css| in every page. It can be specified only once.
+  \item[\texttt{{-}{-}javascript=...}] Import the desired Javascript. Use it to include MathJax v3.0 (as in the example above) or v2.7.
+  \item[\texttt{{-}{-}stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: use the provided \verb|latexmlleeds-html5.xsl|.
+  \item[\texttt{{-}{-}mathtex}] Preserve the original \TeX{} code in maths formulas as annotations. With MathJax, the code appears by right-clicking on the formula and choosing ``Show Math As > Annotation > TeX''.
+  \item[\texttt{{-}{-}svg}] Instruct \LaTeXML{} to use SVG as prefer image format. I have not tested this in real life, it may depend on having ImageMagick installed, and results may vary.
 \end{description}
 Further options that seem important enough (more will be added if they turn out to be relevant).
 \begin{description}
-  \item[\texttt{--navigationtoc=(context|none)}] The value used in this guide is the default (\verb|none|). The value \verb|context| should produce a traditional navigation bar with links to all the chapters, and additional links to sections in the current chapter. I have not tried it yet.
+  \item[\texttt{{-}{-}navigationtoc=(context|none)}] The value used in this guide is the default (\verb|none|). The value \verb|context| should produce a traditional navigation bar with links to all the chapters, and additional links to sections in the current chapter. I have not tried it yet.
 \end{description}
 For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation} or run \verb|latexml --help|, \verb|latexmlpost --help|, \verb|latexmlc --help|.
 
@@ -216,7 +220,7 @@ Some notes:
     % preamble
     \newcommand{\includestream}[2]{
     \lxHTML{<div class="ltx\_leeds\_video">
-        <iframe 
+        <iframe
           src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
           allowfullscreen="">
         </iframe>
