@@ -11,6 +11,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.3em}
 
+\usepackage{tabularx}
+
 \usepackage{listings}
 \lstset{basicstyle=\small\ttfamily,
   keywordstyle=\color{blue}\bfseries,
@@ -98,7 +100,120 @@ latexmlc --splitat=chapter --css=latexmlleeds.css \
   \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \verb|\lxHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
 \end{enumerate}
 
-\section{How to compile this example}
+\section{How to...}
+
+\subsection{...split chapters into different files}
+Add the \verb|--splitat=chapter| argument to \verb|latexmlpost| and/or \verb|latexmlc|. For EPUB, you still get a single file, but the content will be distributed in different blocks with page breaks between them. This helps EPUB readers paginate the content.
+
+The values can be \verb|chapter|, \verb|section|, \verb|subsection|, \verb|subsubsection|.
+
+\subsection{...include a navigation sidebar (WIP)}
+Add \verb|--navigationtoc=context| and \verb|--css=LaTeXML-navbar-left.css| to \verb|latexmlpost| and/or \verb|latexmlc|. The look is antiquated, though. WIP: write a nicer version of \verb|LaTeXML-navbar-left.css| that mimics the GitBook style used by Bookdown.
+
+\subsection{...fix undefined macros}
+If \LaTeXML{} claims that a macro has not been defined, that means that one of your classes or packages either has no \LaTeXML{} binding, or it has one but it is incomplete.
+
+There are at least four solutions.
+\begin{itemize}
+  \item Replace the package with a suitable equivalent supported by \LaTeXML{}.
+  \item Use \verb|\iflatexml| and \verb|\newcommand| to define the macro so that it does something equivalent. This is sensible if the macro is only useful for PDF output (e.g.\ it refers to page numbers, it applies a certain style, etc.), or if the functionality is provided by a \LaTeXML{}-supported package but you prefer to use the original for the PDF.
+  \item Copy the missing definition from the package itself and add it to your preamble (usually within \verb|\makeatletter| and \verb|\makeatother|). Especially useful if the package is partially supported by \LaTeXML{}.
+  \item Add \verb|--includestyles| to \verb|latexml| and \verb|latexmlc|. This is dangerous, though! Some packages are actually meant to be ignored.
+\end{itemize}
+
+\subsection{...fix TikZ problems}
+\LaTeXML{} has partial support for TikZ, however it may crash. Moreover, images may look blurry (try the \verb|--svg| option!) but I have not tested as my pictures just crashed.
+
+The best solution is to let \verb|pdflatex| generate the images and convert them to SVG via \verb|pdf2svg|.
+\begin{enumerate}
+  \item Add the following to your preamble.
+    \begin{lstlisting}[language=TeX]
+\iflatexml
+  % delete if already imported
+  \usepackage{graphicx}
+  % add more extensions if you have other pictures, e.g. JPG
+  \DeclareGraphicsExtensions{.svg,.SVG}
+  \newcounter{tikzpicturecounter}
+  \newcommand{\includetikzexternalized}{%
+    \includegraphics{images/TikZ-\thetikzpicturecounter}%
+    \stepcounter{tikzpicturecounter}}
+\else
+  \usepackage{tikz}
+  \tikzexternalize
+  \tikzsetfigurename{images/TikZ-}
+\fi
+    \end{lstlisting}
+  \item  Wrap every \verb|\begin{tikzpicture} ... \end{tikzpicture}| within
+  \begin{lstlisting}[language=TeX]
+\iflatexml
+\includetikzexternalized
+\else
+\begin{tikzpicture}
+  ...
+\end{tikzpicture}
+\fi
+  \end{lstlisting}
+  \item Create the folder \verb|images| and run \verb|pdflatex| with the option \verb|-shell-escape|. This will generate the images.
+
+  \item Convert the images to SVG using \verb|pdf2svg|.
+    \begin{lstlisting}[language=bash]
+for file in images/TikZ-*.pdf
+  do pdf2svg $file ${file%.pdf}.svg
+done
+    \end{lstlisting}
+  \item Now proceed with \verb|latexml|, \verb|latexmlpost|, \verb|latexmlc| as usual.
+\end{enumerate}
+
+\subsection{...embed videos (WIP but functional)}
+The package \verb|latexmlleeds| provides the command \verb|\lxHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
+
+I recommend creating a command, like the \verb|\includestream| below, to simplify embedding videos while also adding a link (the link is needed in PDF and EPUB). I have added a bit of \CSS{} to \verb|latexmlleeds.css| to make videos work well on all screens. Check the example \autoref{exa:embed-stream} and resize your browser to see how the video resizes accordingly. I will improve the \CSS{} in the near future to accommodate different video resolutions -- for now it expects $1280 \times 720$.
+\begin{lstlisting}[language=TeX]
+  % preamble
+  \newcommand{\includestream}[2]{
+  \lxHTML{<div class="ltx\_leeds\_video">
+      <iframe
+        src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
+        allowfullscreen="">
+      </iframe>
+    </div>}
+    Watch \href{https://web.microsoftstream.com/video/#1}{#2}
+  }
+  % document
+  \includestream{ba6b8866-df29-4dea-a47e-13decc5cd409}{Mock recording for Models and Sets}
+\end{lstlisting}
+
+\subsection{...improve tables}
+Tables work fine, but you may wish to add some hints regarding table headers. The \verb|latexml| provides a few commands like \verb|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
+
+\begin{exa}
+  This is a mock table exercising a few aspects of \LaTeX{} tables, including borders, as well as \verb|tabularx| support.
+  Code:
+  \begin{lstlisting}[language=TeX]
+\begin{table}[h!]
+  \begin{tabularx}{\textwidth}{c|X||c}
+    \lxBeginTableHead{} Header 1 & Header 2 & Header 3 \\
+    \hline \lxEndTableHead{}
+    Content & Content & Content \\
+    More content & content & content \\
+    \hline
+  \end{tabularx}
+  \caption{A table}
+\end{table}
+  \end{lstlisting}
+  Output:
+  \begin{table}[h!]
+    \begin{tabularx}{\textwidth}{c|X||c}
+      \lxBeginTableHead{} Header 1 & Header 2 & Header 3 \\
+      \hline \lxEndTableHead{}
+      Content & Content & Content \\
+      More content & content & content \\
+      \hline
+    \end{tabularx}
+    \caption{A table}
+  \end{table}
+\end{exa}
+\section{Recap: how to compile this example}
 The commands below will use MathJax v3.0.
 \begin{lstlisting}[language=bash,caption={Generate the PDF}]
 # I use latexmk, but pdflatex or your preferred engine will work
@@ -187,6 +302,7 @@ For reference, \verb|latexml| also defines the following, although you can work 
 \end{itemize}
 
 \subsection{The \texttt{latexmlleeds} package}
+\label{sub:latexmlleeds-sty}
 \begin{lstlisting}[language=TeX,caption={Import \texttt{latexmlleeds} in the preamble}]
   \usepackage{latexmlleeds}
 \end{lstlisting}
