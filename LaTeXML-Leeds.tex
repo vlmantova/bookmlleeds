@@ -28,7 +28,7 @@
 \theoremstyle{definition}
 \newtheorem{exa}{Example}[subsection]
 
-\title{LaTeXML Leeds tweaks}
+\title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
 \date{24 August 2020}
 
@@ -36,9 +36,18 @@
 
 \maketitle
 
+\begin{abstract}
+  This is a short guide to \LaTeXML{} to produce a modern and mobile friendly online version of your lecture notes directly from your \LaTeX{} files, with minimal and sometimes no changes to your \verb|.tex| code, and no modification at all of the \HTML{} output. This very document is written in \LaTeX{} and converted to \HTML{} with \LaTeXML{} and the \verb|latexmlleeds| additions. The guide is also available in \href{LaTeXML-Leeds.epub}{EPUB} and \href{LaTeXML-Leeds.pdf}{PDF}.
+
+  The hard work is done by \LaTeXML{} (the engine behind \href{https://www.arxiv-vanity.com/}{arXiv Vanity}). If you want to see \LaTeXML{} in action, you can use the online \href{https://latexml.mathweb.org/editor}{demo \LaTeX{} editor} to type \LaTeX{} and check the \HTML{} output right in the browser (the page has several advanced examples, including TikZ pictures).
+
+  The \verb|latexmlleeds| additions are a bunch of files that will make your output a bit more accessible and, above all, mobile friendly. Moreover, you can use the additions to get direct access to the \HTML{} output and, for instance, embed Stream or Mediasite videos right into the lecture notes.
+  \end{abstract}
+
+
 \tableofcontents
 
-\section{Quick guide to \texttt{latexmlleeds}}
+\section{Quick guide to \texorpdfstring{\LaTeXML{}}{LaTeXML} and \texttt{latexmlleeds}}
 \begin{enumerate}
   \item If you can, update your \LaTeXML{} to v0.8.4. Rumour is that v0.8.5 will be released ``this month''. Previous versions (0.8.2, 0.8.3) will generally work, but they support fewer packages, and the output will look a bit worse. This guide is only tested with version 0.8.4.
   \item Copy the files below next to the \verb|.tex| source.
