@@ -10,6 +10,7 @@ clean:
 	-rm -f $(TARGETS)
 
 latexmlleeds.zip: latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf
+	-rm -f "$@"
 	zip -r "$@" latexmlleeds
 
 latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css latexmlleeds-html5.xsl
