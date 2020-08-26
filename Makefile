@@ -22,7 +22,7 @@ latexmlleeds/%.epub: %.tex latexmlleeds.css
 	latexmlc --splitat=chapter --svg --css=latexmlleeds.css \
     --destination="$@" "$<"
 
-latexmlleeds/%.pdf: %.tex
+latexmlleeds/%.pdf: %.tex latexmlleeds.sty
 	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error" -pdf "$<"
 
 %.xml: %.tex latexmlleeds.sty latexmlleeds.sty.ltxml
