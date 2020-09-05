@@ -16,7 +16,7 @@
 \usepackage{listings}
 \lstset{basicstyle=\small\ttfamily,
   keywordstyle=\color{blue}\bfseries,
-  ndkeywordstyle=\color{ForestGreen}\bfseries,
+  ndkeywordstyle=\color{MidnightBlue}\bfseries,
   stringstyle=\color{red},
   commentstyle=\color{ForestGreen}
 }
@@ -25,6 +25,8 @@
   keywords={accelerator,azimuth,background,background-attachment,background-color,background-image,background-position,background-position-x,background-position-y,background-repeat,behavior,border,border-bottom,border-bottom-color,border-bottom-style,border-bottom-width,border-collapse,border-color,border-left,border-left-color,border-left-style,border-left-width,border-right,border-right-color,border-right-style,border-right-width,border-spacing,border-style,border-top,border-top-color,border-top-style,border-top-width,border-width,bottom,caption-side,clear,clip,color,content,counter-increment,counter-reset,cue,cue-after,cue-before,cursor,direction,display,elevation,empty-cells,filter,float,font,font-family,font-size,font-size-adjust,font-stretch,font-style,font-variant,font-weight,height,ime-mode,include-source,layer-background-color,layer-background-image,layout-flow,layout-grid,layout-grid-char,layout-grid-char-spacing,layout-grid-line,layout-grid-mode,layout-grid-type,left,letter-spacing,line-break,line-height,list-style,list-style-image,list-style-position,list-style-type,margin,margin-bottom,margin-left,margin-right,margin-top,marker-offset,marks,max-height,max-width,min-height,min-width,-moz-binding,-moz-border-radius,-moz-border-radius-topleft,-moz-border-radius-topright,-moz-border-radius-bottomright,-moz-border-radius-bottomleft,-moz-border-top-colors,-moz-border-right-colors,-moz-border-bottom-colors,-moz-border-left-colors,-moz-opacity,-moz-outline,-moz-outline-color,-moz-outline-style,-moz-outline-width,-moz-user-focus,-moz-user-input,-moz-user-modify,-moz-user-select,orphans,outline,outline-color,outline-style,outline-width,overflow,overflow-X,overflow-Y,padding,padding-bottom,padding-left,padding-right,padding-top,page,page-break-after,page-break-before,page-break-inside,pause,pause-after,pause-before,pitch,pitch-range,play-during,position,quotes,-replace,richness,right,ruby-align,ruby-overhang,ruby-position,-set-link-source,size,speak,speak-header,speak-numeral,speak-punctuation,speech-rate,stress,scrollbar-arrow-color,scrollbar-base-color,scrollbar-dark-shadow-color,scrollbar-face-color,scrollbar-highlight-color,scrollbar-shadow-color,scrollbar-3d-light-color,scrollbar-track-color,table-layout,text-align,text-align-last,text-decoration,text-indent,text-justify,text-overflow,text-shadow,text-transform,text-autospace,text-kashida-space,text-underline-position,top,unicode-bidi,-use-link-source,vertical-align,visibility,voice-family,volume,white-space,widows,width,word-break,word-spacing,word-wrap,writing-mode,z-index,zoom},
   morecomment=[s]{/*}{*/},
   alsoletter={-}}
+
+\lstdefinestyle{LaTeX}{language=[LaTeX]TeX,morendkeywords={iflatexml}}
 
 \usepackage{amsthm}
 \theoremstyle{definition}
@@ -62,7 +64,7 @@
   \end{itemize}
   You can download them from the \href{https://dev.azure.com/pmtvlm-leeds-ac-uk/public/_git/latexmlleeds}{\texttt{latexmlleeds} repository}, together with the \verb|.tex| source of this very document. Please submit a pull request if you have changes that should be made available to everyone (e.g.\ improved \CSS{}, other video or quiz embedding commands).
   \item Add
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
 \usepackage{latexml} % for \iflatexml and other goodies
 \usepackage{latexmlleeds} % for \lxHTML, see below
   \end{lstlisting}
@@ -72,7 +74,7 @@
 latexml --destination=myfile.xml myfile.tex
   \end{lstlisting}
   If you are lucky, there will be no errors at all. If you get errors, you will have to adjust your \LaTeX{}. You can use \verb|\iflatexml| to run different code under \verb|latexml| -- this is useful if your problems come from packages that are useful only when compiling to PDF.
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
 \iflatexml
   % code only executed by latexml
 \else
@@ -127,7 +129,7 @@ There are at least four solutions.
 The best solution is to let \verb|pdflatex| generate the images and convert them to SVG via \verb|pdf2svg|.
 \begin{enumerate}
   \item Add the following to your preamble.
-    \begin{lstlisting}[language=TeX]
+    \begin{lstlisting}[style=LaTeX]
 \iflatexml
   % delete if already imported
   \usepackage{graphicx}
@@ -144,7 +146,7 @@ The best solution is to let \verb|pdflatex| generate the images and convert them
 \fi
     \end{lstlisting}
   \item  Wrap every \verb|\begin{tikzpicture} ... \end{tikzpicture}| within
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
 \iflatexml
 \includetikzexternalized
 \else
@@ -189,7 +191,7 @@ Tables work fine, but you may wish to add some hints regarding table headers. Th
 \begin{exa}
   This is a mock table exercising a few aspects of \LaTeX{} tables, including borders, as well as \verb|tabularx| support.
   Code:
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
 \begin{table}[h!]
   \begin{tabularx}{\textwidth}{c|X||c}
     \lxBeginTableHead{} Header 1 & Header 2 & Header 3 \\
@@ -262,12 +264,12 @@ For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs
 \section{Documentation}
 
 \subsection{The \texttt{latexml} package}
-\begin{lstlisting}[language=TeX,caption={Import \texttt{latexml} in the preamble}]
+\begin{lstlisting}[style=LaTeX,caption={Import \texttt{latexml} in the preamble}]
   \usepackage[nocomments]{latexml}
 \end{lstlisting}
 
 The package \verb|latexml| takes some options that will be passed to the \LaTeXML{} engine, such as \verb|nocomment| (that strips the \verb|%| comments away) or \verb|mathparsespeculate|. Moreover, it offers a variety of commands. The most important one:
-\begin{lstlisting}[language=TeX]
+\begin{lstlisting}[style=LaTeX]
   \iflatexml
     % code only executed by latexml
   \else
@@ -277,7 +279,7 @@ The package \verb|latexml| takes some options that will be passed to the \LaTeXM
 
 \begin{exa}
   Code:
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
     \usepackage{latexml}
     ...
     \begin{document}
@@ -303,14 +305,14 @@ For reference, \verb|latexml| also defines the following, although you can work 
 
 \subsection{The \texttt{latexmlleeds} package}
 \label{sub:latexmlleeds-sty}
-\begin{lstlisting}[language=TeX,caption={Import \texttt{latexmlleeds} in the preamble}]
+\begin{lstlisting}[style=LaTeX,caption={Import \texttt{latexmlleeds} in the preamble}]
   \usepackage{latexmlleeds}
 \end{lstlisting}
 
 \verb|latexmlleeds| defines \verb|\lxHTML{html}|, which outputs the \verb|html| argument directly as \HTML{} code. The \verb|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
 \begin{exa}
   Code:
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
     This sentence appears in all versions.
     \lxHTML{<span>But this part is
       <strong>only in the HTML outputs</strong>.</span>}
@@ -332,7 +334,7 @@ Some notes:
 
 \begin{exa}[Embed Stream videos]\label{exa:embed-stream}
   This is only a proof of concept, but already functional: it embeds a video directly into \HTML{} and EPUB, and provides a link in all contexts (note that embedded videos may not work everywhere, especially with EPUB, so always include the link). The code is accompanied by some extra \CSS{} inside \verb|latexmlleeds.css| to make the video size responsive, however you must customize it to match the resolution of your videos (mine is $1280 \times 720$).
-  \begin{lstlisting}[language=TeX]
+  \begin{lstlisting}[style=LaTeX]
     % preamble
     \newcommand{\includestream}[2]{
     \lxHTML{<div class="ltx\_leeds\_video">
