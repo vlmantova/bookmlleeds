@@ -18,17 +18,16 @@ latexmlleeds.zip: latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexm
 
 latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css latexmlleeds-html5.xsl | latexmlleeds
 	latexmlpost \
-		--javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"\
+		--javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
 		--mathtex --svg --stylesheet=latexmlleeds-html5.xsl \
 		--css=latexmlleeds.css --destination="$@" "$<"
 
 latexmlleeds/%.epub: %.tex latexmlleeds.css
 	latexmlc --splitat=chapter --svg --css=latexmlleeds.css \
-    --destination="$@" "$<"
+		--destination="$@" "$<"
 
 latexmlleeds/%.pdf: %.tex latexmlleeds.sty
 	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error" -pdf "$<"
 
 %.xml: %.tex latexmlleeds.sty latexmlleeds.sty.ltxml
 	latexml --destination="$@" "$<"
-
