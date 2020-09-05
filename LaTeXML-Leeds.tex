@@ -14,11 +14,11 @@
 \usepackage{tabularx}
 
 \usepackage{listings}
-\lstset{basicstyle=\small\ttfamily,
-  keywordstyle=\color{blue}\bfseries,
-  ndkeywordstyle=\color{MidnightBlue}\bfseries,
-  stringstyle=\color{red},
-  commentstyle=\color{ForestGreen}
+\lstset{basicstyle={\small\ttfamily},%
+  keywordstyle={\color{blue}\bfseries},%
+  keywordstyle=[2]{\color{MidnightBlue}\bfseries},%
+  stringstyle={\color{red}},%
+  commentstyle={\color{ForestGreen}}%
 }
 
 \lstdefinelanguage{CSS}{sensitive,
@@ -26,7 +26,10 @@
   morecomment=[s]{/*}{*/},
   alsoletter={-}}
 
-\lstdefinestyle{latexml}{language=[LaTeX]TeX,morekeywords=[2]{tikz,LaTeXML,iflatexml,lxHTML,lxAddClass,lxWithClass,lxBeginTableHead,lxEndTableHead,lxFcn,lxID,lxPunct,lxContextTOC,lxNavbar,lxHeader,lxFooter}}
+\lstdefinestyle{latexml}{language=[LaTeX]TeX,%
+  texcsstyle=[2]{\color{MidnightBlue}\bfseries},%
+  moretexcs=[2]{LaTeXML,iflatexml,lxHTML,lxAddClass,lxWithClass,lxBeginTableHead,lxEndTableHead,lxFcn,lxID,lxPunct,lxContextTOC,lxNavbar,lxHeader,lxFooter}%
+  }
 
 \def\lxVerb{\lstinline[style=latexml]}
 
