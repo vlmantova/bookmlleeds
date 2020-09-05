@@ -28,6 +28,7 @@ latexmlleeds/%.epub: %.tex latexmlleeds.css
 
 latexmlleeds/%.pdf: %.tex latexmlleeds.sty
 	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error" -pdf "$<"
+	mv -f "$*".pdf "$@"
 
 %.xml: %.tex latexmlleeds.sty latexmlleeds.sty.ltxml
 	latexml --destination="$@" "$<"
