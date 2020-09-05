@@ -26,7 +26,9 @@
   morecomment=[s]{/*}{*/},
   alsoletter={-}}
 
-\lstdefinestyle{LaTeX}{language=[LaTeX]TeX,morendkeywords={iflatexml}}
+\lstdefinestyle{latexml}{language=[LaTeX]TeX,morekeywords=[2]{tikz,LaTeXML,iflatexml,lxHTML,lxAddClass,lxWithClass,lxBeginTableHead,lxEndTableHead,lxFcn,lxID,lxPunct,lxContextTOC,lxNavbar,lxHeader,lxFooter}}
+
+\def\lxVerb{\lstinline[style=latexml]}
 
 \usepackage{amsthm}
 \theoremstyle{definition}
@@ -64,7 +66,7 @@
   \end{itemize}
   You can download them from the \href{https://dev.azure.com/pmtvlm-leeds-ac-uk/public/_git/latexmlleeds}{\texttt{latexmlleeds} repository}, together with the \verb|.tex| source of this very document. Please submit a pull request if you have changes that should be made available to everyone (e.g.\ improved \CSS{}, other video or quiz embedding commands).
   \item Add
-  \begin{lstlisting}[style=LaTeX]
+  \begin{lstlisting}[style=latexml]
 \usepackage{latexml} % for \iflatexml and other goodies
 \usepackage{latexmlleeds} % for \lxHTML, see below
   \end{lstlisting}
@@ -73,8 +75,8 @@
   \begin{lstlisting}[language=bash]
 latexml --destination=myfile.xml myfile.tex
   \end{lstlisting}
-  If you are lucky, there will be no errors at all. If you get errors, you will have to adjust your \LaTeX{}. You can use \verb|\iflatexml| to run different code under \verb|latexml| -- this is useful if your problems come from packages that are useful only when compiling to PDF.
-  \begin{lstlisting}[style=LaTeX]
+  If you are lucky, there will be no errors at all. If you get errors, you will have to adjust your \LaTeX{}. You can use \lxVerb|\iflatexml| to run different code under \verb|latexml| -- this is useful if your problems come from packages that are useful only when compiling to PDF.
+  \begin{lstlisting}[style=latexml]
 \iflatexml
   % code only executed by latexml
 \else
@@ -99,7 +101,7 @@ latexmlc --splitat=chapter --css=latexmlleeds.css \
   I strongly recommend you put the output in a subfolder (the \verb|mynotes| in \verb|mynotes/myfile.html| above) since there will be additional files that need to travel together with the main \verb|myfile.html|.
 
   The option \verb|--splitat=| can split the output in various ways (part, chapter, section\dots{}) according to your needs. You \textbf{must} split long lecture notes, otherwise MathJax will take ages to render your formulas and EPUB readers will spend a long time paginating the content.
-  \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \verb|\lxHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
+  \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \lxVerb|\lxHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
 \end{enumerate}
 
 \section{How to...}
@@ -118,8 +120,8 @@ If \LaTeXML{} claims that a macro has not been defined, that means that one of y
 There are at least four solutions.
 \begin{itemize}
   \item Replace the package with a suitable equivalent supported by \LaTeXML{}.
-  \item Use \verb|\iflatexml| and \verb|\newcommand| to define the macro so that it does something equivalent. This is sensible if the macro is only useful for PDF output (e.g.\ it refers to page numbers, it applies a certain style, etc.), or if the functionality is provided by a \LaTeXML{}-supported package but you prefer to use the original for the PDF.
-  \item Copy the missing definition from the package itself and add it to your preamble (usually within \verb|\makeatletter| and \verb|\makeatother|). Especially useful if the package is partially supported by \LaTeXML{}.
+  \item Use \lxVerb|\iflatexml| and \lxVerb|\newcommand| to define the macro so that it does something equivalent. This is sensible if the macro is only useful for PDF output (e.g.\ it refers to page numbers, it applies a certain style, etc.), or if the functionality is provided by a \LaTeXML{}-supported package but you prefer to use the original for the PDF.
+  \item Copy the missing definition from the package itself and add it to your preamble (usually within \lxVerb|\makeatletter| and \lxVerb|\makeatother|). Especially useful if the package is partially supported by \LaTeXML{}.
   \item Add \verb|--includestyles| to \verb|latexml| and \verb|latexmlc|. This is dangerous, though! Some packages are actually meant to be ignored.
 \end{itemize}
 
@@ -129,7 +131,7 @@ There are at least four solutions.
 The best solution is to let \verb|pdflatex| generate the images and convert them to SVG via \verb|pdf2svg|.
 \begin{enumerate}
   \item Add the following to your preamble.
-    \begin{lstlisting}[style=LaTeX]
+    \begin{lstlisting}[style=latexml]
 \iflatexml
   % delete if already imported
   \usepackage{graphicx}
@@ -145,8 +147,8 @@ The best solution is to let \verb|pdflatex| generate the images and convert them
   \tikzsetfigurename{images/TikZ-}
 \fi
     \end{lstlisting}
-  \item  Wrap every \verb|\begin{tikzpicture} ... \end{tikzpicture}| within
-  \begin{lstlisting}[style=LaTeX]
+  \item  Wrap every \lxVerb|\begin{tikzpicture} ... \end{tikzpicture}| within
+  \begin{lstlisting}[style=latexml]
 \iflatexml
 \includetikzexternalized
 \else
@@ -167,10 +169,10 @@ done
 \end{enumerate}
 
 \subsection{...embed videos (WIP but functional)}
-The package \verb|latexmlleeds| provides the command \verb|\lxHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
+The package \verb|latexmlleeds| provides the command \lxVerb|\lxHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
 
-I recommend creating a command, like the \verb|\includestream| below, to simplify embedding videos while also adding a link (the link is needed in PDF and EPUB). I have added a bit of \CSS{} to \verb|latexmlleeds.css| to make videos work well on all screens. Check the example \autoref{exa:embed-stream} and resize your browser to see how the video resizes accordingly. I will improve the \CSS{} in the near future to accommodate different video resolutions -- for now it expects $1280 \times 720$.
-\begin{lstlisting}[language=TeX]
+I recommend creating a command, like the \lxVerb|\includestream| below, to simplify embedding videos while also adding a link (the link is needed in PDF and EPUB). I have added a bit of \CSS{} to \verb|latexmlleeds.css| to make videos work well on all screens. Check the example \autoref{exa:embed-stream} and resize your browser to see how the video resizes accordingly. I will improve the \CSS{} in the near future to accommodate different video resolutions -- for now it expects $1280 \times 720$.
+\begin{lstlisting}[style=latexml]
   % preamble
   \newcommand{\includestream}[2]{
   \lxHTML{<div class="ltx\_leeds\_video">
@@ -186,12 +188,12 @@ I recommend creating a command, like the \verb|\includestream| below, to simplif
 \end{lstlisting}
 
 \subsection{...improve tables}
-Tables work fine, but you may wish to add some hints regarding table headers. The \verb|latexml| provides a few commands like \verb|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
+Tables work fine, but you may wish to add some hints regarding table headers. The \verb|latexml| provides a few commands like \lxVerb|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
 
 \begin{exa}
   This is a mock table exercising a few aspects of \LaTeX{} tables, including borders, as well as \verb|tabularx| support.
   Code:
-  \begin{lstlisting}[style=LaTeX]
+  \begin{lstlisting}[style=latexml]
 \begin{table}[h!]
   \begin{tabularx}{\textwidth}{c|X||c}
     \lxBeginTableHead{} Header 1 & Header 2 & Header 3 \\
@@ -264,12 +266,12 @@ For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs
 \section{Documentation}
 
 \subsection{The \texttt{latexml} package}
-\begin{lstlisting}[style=LaTeX,caption={Import \texttt{latexml} in the preamble}]
+\begin{lstlisting}[style=latexml,caption={Import \texttt{latexml} in the preamble}]
   \usepackage[nocomments]{latexml}
 \end{lstlisting}
 
-The package \verb|latexml| takes some options that will be passed to the \LaTeXML{} engine, such as \verb|nocomment| (that strips the \verb|%| comments away) or \verb|mathparsespeculate|. Moreover, it offers a variety of commands. The most important one:
-\begin{lstlisting}[style=LaTeX]
+The package \verb|latexml| takes some options that will be passed to the \LaTeXML{} engine, such as \lxVerb|nocomment| (that strips the \lxVerb|%| comments away) or \lxVerb|mathparsespeculate|. Moreover, it offers a variety of commands. The most important one:
+\begin{lstlisting}[style=latexml]
   \iflatexml
     % code only executed by latexml
   \else
@@ -279,7 +281,7 @@ The package \verb|latexml| takes some options that will be passed to the \LaTeXM
 
 \begin{exa}
   Code:
-  \begin{lstlisting}[style=LaTeX]
+  \begin{lstlisting}[style=latexml]
     \usepackage{latexml}
     ...
     \begin{document}
@@ -296,23 +298,23 @@ The package \verb|latexml| takes some options that will be passed to the \LaTeXM
 
 For reference, \verb|latexml| also defines the following, although you can work very well without them. Just open \verb|latexml.sty| (it is very short) to see all the commands, a bit of documentation in the comments, and the occasional example. The \href{https://github.com/brucemiller/LaTeXML/tree/master/doc/manual}{source} of the \LaTeXML{} documentation is also a source of examples.
 \begin{itemize}
-  \item \verb|\lxAddClass{class}| and \verb|\lxWithClass{class}{content}| to add CSS classes to the output;
-  \item \verb|\lxBeginTableHead|, \verb|\lxEndTableHead| and variations to mark table headers and footers (read the \verb|latexml.sty| source for how to use them);
-  \item \verb|\lxFcn{code}|, \verb|\lxID{code}|, \verb|\lxPunct{code}| to help \LaTeXML{} understand the meaning of mathematical symbols (\LaTeXML{} recognises the meaning on its own, but every once in a while, there will be a symbol that is just too ambiguous -- just keep an eye on the warnings during compilation);
-  \item \verb|\lxContextTOC|, \verb|\lxNavbar{arg}|, \verb|\lxHeader{arg}|, \verb|\lxFooter{arg}| to customise the HTML pages (I have yet to figure out how they work);
+  \item \lxVerb|\lxAddClass{class}| and \lxVerb|\lxWithClass{class}{content}| to add CSS classes to the output;
+  \item \lxVerb|\lxBeginTableHead|, \lxVerb|\lxEndTableHead| and variations to mark table headers and footers (read the \verb|latexml.sty| source for how to use them);
+  \item \lxVerb|\lxFcn{code}|, \lxVerb|\lxID{code}|, \lxVerb|\lxPunct{code}| to help \LaTeXML{} understand the meaning of mathematical symbols (\LaTeXML{} recognises the meaning on its own, but every once in a while, there will be a symbol that is just too ambiguous -- just keep an eye on the warnings during compilation);
+  \item \lxVerb|\lxContextTOC|, \lxVerb|\lxNavbar{arg}|, \lxVerb|\lxHeader{arg}|, \lxVerb|\lxFooter{arg}| to customise the HTML pages (I have yet to figure out how they work);
   \item and a few other commands.
 \end{itemize}
 
 \subsection{The \texttt{latexmlleeds} package}
 \label{sub:latexmlleeds-sty}
-\begin{lstlisting}[style=LaTeX,caption={Import \texttt{latexmlleeds} in the preamble}]
+\begin{lstlisting}[style=latexml,caption={Import \texttt{latexmlleeds} in the preamble}]
   \usepackage{latexmlleeds}
 \end{lstlisting}
 
-\verb|latexmlleeds| defines \verb|\lxHTML{html}|, which outputs the \verb|html| argument directly as \HTML{} code. The \verb|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
+\verb|latexmlleeds| defines \lxVerb|\lxHTML{html}|, which outputs the \lxVerb|html| argument directly as \HTML{} code. The \lxVerb|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
 \begin{exa}
   Code:
-  \begin{lstlisting}[style=LaTeX]
+  \begin{lstlisting}[style=latexml]
     This sentence appears in all versions.
     \lxHTML{<span>But this part is
       <strong>only in the HTML outputs</strong>.</span>}
@@ -329,12 +331,12 @@ Some notes:
 \begin{itemize}
   \item The \HTML{} must be written in ``\XML{} serialisation'', hence all tags must be closed (e.g.\ \verb|<br>| must be written as \verb|<br/>|) and all attributes must have a value (e.g.\ \verb|allowfullscreen| must be written \verb|allowfullscreen=""|).
   \item The content must be written inside \HTML{} elements. Any text not contained in an element will be dropped. If in doubt, put \verb|<span>...</span>| around your \HTML{}.
-  \item The \HTML{} is still interpreted as \LaTeX{} code, hence it must be escaped appropriately. For instance, every \verb|{| must be replaced by \verb|\{|; every \verb|&| must be replaced by \verb|\&| (and probably be written as \verb|\&amp;| -- you must write correct \HTML{}!).
+  \item The \HTML{} is still interpreted as \LaTeX{} code, hence it must be escaped appropriately. For instance, every \lxVerb|{| must be replaced by \lxVerb|\{|; every \lxVerb|&| must be replaced by \lxVerb|\&| (and probably be written as \lxVerb|\&amp;| -- you must write correct \HTML{}!).
 \end{itemize}
 
 \begin{exa}[Embed Stream videos]\label{exa:embed-stream}
   This is only a proof of concept, but already functional: it embeds a video directly into \HTML{} and EPUB, and provides a link in all contexts (note that embedded videos may not work everywhere, especially with EPUB, so always include the link). The code is accompanied by some extra \CSS{} inside \verb|latexmlleeds.css| to make the video size responsive, however you must customize it to match the resolution of your videos (mine is $1280 \times 720$).
-  \begin{lstlisting}[style=LaTeX]
+  \begin{lstlisting}[style=latexml]
     % preamble
     \newcommand{\includestream}[2]{
     \lxHTML{<div class="ltx\_leeds\_video">
@@ -370,7 +372,7 @@ Some notes:
 Normally, you do not need to care about this file. The \verb|latexmlleeds.xsl| \XSLT{} stylesheet does only three things:
 \begin{itemize}
   \item make sure you output HTML5 (which would be the default, anyway);
-  \item it makes \HTML{} lists more accessible by ignoring custom enumerations (i.e., the \verb|(a)| in \verb|\item[(a)]|; you should modify your \CSS{} to do custom enumerations in \HTML{});
+  \item it makes \HTML{} lists more accessible by ignoring custom enumerations (i.e., the \lxVerb|(a)| in \lxVerb|\item[(a)]|; you should modify your \CSS{} to do custom enumerations in \HTML{});
   \item it adds modern HTML5 tags to make the output more mobile friendly, and removes the outdated \verb|Content-type| meta tag.
 \end{itemize}
 The \XSLT{} may be updated in the future to improve a few aspects of the resulting \HTML{}; for instance, we might discover that offloading the maths parsing entirely to MathJax is better overall, and this can only be done by tweaking the \XSLT{}.
@@ -390,7 +392,7 @@ This styling has only been tested with the \verb|article| class and on Edge and 
 \section{Good practices}
 \begin{itemize}
   \item Follow Martin's recommendations about fonts, tables, margins, and so on.
-  \item Use semantic \LaTeX{} commands as much as possible (\verb|\chapter|, \verb|\section|, \verb|\newtheorem|).
+  \item Use semantic \LaTeX{} commands as much as possible (\lxVerb|\chapter|, \lxVerb|\section|, \lxVerb|\newtheorem|).
   \item Although not strictly needed, it is better to restrict yourself to MathJax supported commands in math mode. In this way the students will be able to copy and paste your \TeX{} code from the lecture notes to the discussion boards, once they learn how to do so. See the MathJax documentation for the full list.
 \end{itemize}
 
