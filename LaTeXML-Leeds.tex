@@ -47,7 +47,7 @@
 \maketitle
 
 \begin{abstract}
-  This is a short guide to \LaTeXML{} to produce a modern and mobile friendly online version of your lecture notes directly from your \LaTeX{} files, with minimal and sometimes no changes to your \verb|.tex| code, and no modification at all of the \HTML{} output. This very document is written in \LaTeX{} and converted to \HTML{} with \LaTeXML{} and the \verb|latexmlleeds| additions. The guide is also available in \href{LaTeXML-Leeds.epub}{EPUB} and \href{LaTeXML-Leeds.pdf}{PDF}.
+  This is a short guide to \LaTeXML{} to produce a modern and mobile friendly online version of your lecture notes directly from your \LaTeX{} files, with minimal and sometimes almost no changes to your \verb|.tex| code, and no modification at all of the \HTML{} output. This very document is written in \LaTeX{} and converted to \HTML{} with \LaTeXML{} and the \verb|latexmlleeds| additions. The guide is also available in \href{LaTeXML-Leeds.epub}{EPUB} and \href{LaTeXML-Leeds.pdf}{PDF}.
 
   The hard work is done by \LaTeXML{}. If you want to see \LaTeXML{} in action, you can visit \href{https://www.arxiv-vanity.com/}{arXiv Vanity} and paste the link to one of your own preprints, or you can use the online \href{https://latexml.mathweb.org/editor}{demo \LaTeX{} editor} to type \LaTeX{} and check the \HTML{} output right in the browser (the page has several advanced examples, including TikZ pictures).
 
@@ -77,24 +77,25 @@
   You can download them from the \href{https://dev.azure.com/pmtvlm-leeds-ac-uk/public/_git/latexmlleeds}{\texttt{latexmlleeds} repository}, together with the \verb|.tex| source of this very document. Please submit a pull request if you have changes that should be made available to everyone (e.g.\ improved \CSS{}, other video or quiz embedding commands).
   \item Add
   \begin{lstlisting}[style=latexml]
-% for \iflatexml and other goodies - whenever needed
+% for \iflatexml and other goodies
+% can be loaded whenever needed
 \usepackage{latexml}
 
 % to improve the HTML style, \ldsHTML and other goodies
-% use *after* loading all the other packages
+% load *after* loading all the other packages
 \usepackage{latexmlleeds}
   \end{lstlisting}
-  to your preamble. You should add \verb|latexmlleeds| \emph{after} loading all the other packages.
+  to your preamble. You should load \verb|latexmlleeds| \emph{after} loading all the other packages.
   \item Run the command below and see if there are errors.
   \begin{lstlisting}[language=bash]
 latexml --destination=myfile.xml myfile.tex
   \end{lstlisting}
-  If you are lucky, there will be no errors at all. If you get errors, you will have to adjust your \LaTeX{}. You can use \ltxinline|\iflatexml| to run different code under \verb|latexml| -- this is useful if your problems come from packages that are useful only when compiling to PDF.
+  If you are lucky, there will be no errors at all. If you get errors, you need to adjust your \LaTeX{}. You can use \ltxinline|\iflatexml| to run different code under \verb|latexml|. I recommend using \ltxinline|\iflatexml| and \ltxinline|\newcommand| in the preamble to conditionally redefine problematic commands; in many scenarios, you will solve your problems with no changes to the content.
   \begin{lstlisting}[style=latexml]
 \iflatexml
   % code only executed by latexml
 \else
-  % code only executed by the other engines
+  % code only executed by other engines
 \fi
   \end{lstlisting}
   \item Once everything is good, you can conclude with
@@ -105,7 +106,7 @@ latexmlpost --mathtex --svg \
 # ...and zip it for upload on Minerva
 zip -r mynotes.zip mynotes
 
-# to create the EPUB
+# to create the EPUB (experimental)
 latexmlc --splitat=chapter --svg \
   --destination=myfile.epub myfile.tex
   \end{lstlisting}
@@ -185,6 +186,8 @@ done
   \item Now proceed with \verb|latexml|, \verb|latexmlpost|, \verb|latexmlc| as usual.
 \end{enumerate}
 
+WIP: integrate steps 1-2 into \verb|latexmlleeds|, so that \lstinline|\usepackage[tikzexternalize]{latexmlleeds}| has the same effect without changes to the \verb|.tex| code.
+
 \subsection{...embed videos (WIP but functional)}
 The package \verb|latexmlleeds| provides the command \ltxinline|\ldsHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
 
@@ -205,7 +208,9 @@ I recommend creating a command, like the \ltxinline|\includestream| below, to si
 \end{lstlisting}
 
 \subsection{...improve tables}
-Tables work fine, but you may wish to add some hints regarding table headers. The \verb|latexml| provides a few commands like \ltxinline|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
+Tables generally work fine, although Mart\'in managed to trigger some interesting bugs using nested tables. As a general rule, if you are nesting tables, check if \verb|multirow| and \verb|multicol| (both supported by \LaTeXML{}) can give the same result.
+
+  For accessibility, it is good practice to add hints about table headers. The \verb|latexml| provides a few commands like \ltxinline|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
 
 \begin{exa}
   This is a mock table exercising a few aspects of \LaTeX{} tables, including borders, as well as \verb|tabularx| support.
@@ -235,7 +240,6 @@ Tables work fine, but you may wish to add some hints regarding table headers. Th
   \end{table}
 \end{exa}
 \section{Recap: how to compile this example}
-The commands below will use MathJax v3.0.
 \begin{lstlisting}[language=bash,caption={Generate the PDF}]
 # I use latexmk, but pdflatex or your preferred engine will work
 latexmk -pdf LaTeXML-Leeds
@@ -271,7 +275,7 @@ Further options that seem important enough (more will be added if they turn out 
 \begin{description}
   \item[\texttt{{-}{-}navigationtoc=(context|none)}] The value used in this guide is the default (\verb|none|). The value \verb|context| should produce a traditional navigation bar with links to all the chapters, and additional links to sections in the current chapter. I have not tried it yet.
   \item[\texttt{{-}{-}css=style.css}] Import the \CSS{} \verb|style.css| in every page.
-  \item[\texttt{{-}{-}stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: the important settings are already customised in \verb|LaTeXML-html5.xsl| (see \autoref{sub:xslt} to make sure you do not miss a spot).
+  \item[\texttt{{-}{-}stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: the important settings are already customised in \verb|LaTeXML-html5.xsl| (see \autoref{sub:xslt} to see what the customisations do on top of \LaTeXML{}).
 \end{description}
 For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation} or run \verb|latexml --help|, \verb|latexmlpost --help|, \verb|latexmlc --help|.
 
@@ -288,7 +292,7 @@ The package \verb|latexml| takes some options that will be passed to the \LaTeXM
   \iflatexml
     % code only executed by latexml
   \else
-    % code only executed by the other engines
+    % code only executed by other engines
   \fi
 \end{lstlisting}
 
@@ -313,7 +317,7 @@ For reference, \verb|latexml| also defines the following, although you can work 
 \begin{itemize}
   \item \ltxinline|\lxAddClass{class}| and \ltxinline|\lxWithClass{class}{content}| to add CSS classes to the output;
   \item \ltxinline|\lxBeginTableHead|, \ltxinline|\lxEndTableHead| and variations to mark table headers and footers (read the \verb|latexml.sty| source for how to use them);
-  \item \ltxinline|\lxFcn{code}|, \ltxinline|\lxID{code}|, \ltxinline|\lxPunct{code}| to help \LaTeXML{} understand the meaning of mathematical symbols (\LaTeXML{} recognises the meaning on its own, but every once in a while, there will be a symbol that is just too ambiguous -- just keep an eye on the warnings during compilation);
+  \item \ltxinline|\lxFcn{code}|, \ltxinline|\lxID{code}|, \ltxinline|\lxPunct{code}| to help \LaTeXML{} understand the meaning of mathematical symbols (\LaTeXML{} recognises the meaning on its own, but every once in a while, there will be a symbol that is just too ambiguous: is $f(a+b)$ the function $f$ applied to $a+b$, or the number $f$ multiplied by $a+b$? keep an eye on the warnings during compilation);
   \item \ltxinline|\lxContextTOC|, \ltxinline|\lxNavbar{arg}|, \ltxinline|\lxHeader{arg}|, \ltxinline|\lxFooter{arg}| to customise the HTML pages (I have yet to figure out how they work);
   \item and a few other commands.
 \end{itemize}
@@ -324,7 +328,7 @@ For reference, \verb|latexml| also defines the following, although you can work 
   \usepackage{latexmlleeds}
 \end{lstlisting}
 
-\verb|latexmlleeds| defines \ltxinline|\ldsHTML{html}|, which outputs the \ltxinline|html| argument directly as \HTML{} code. The \ltxinline|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
+\verb|latexmlleeds| makes \LaTeXML{} include \verb|latexmlleeds.css| (described below) and it defines \ltxinline|\ldsHTML{html}|, which outputs the \ltxinline|html| argument directly as \HTML{} code. The \ltxinline|html| is only processed by \LaTeXML{} and ignored by other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
 \begin{exa}
   Code:
   \begin{lstlisting}[style=latexml]
@@ -416,8 +420,8 @@ This styling has only been tested with the \verb|article| class and on Edge and 
   \item List of packages \href{https://dlmf.nist.gov/LaTeXML/manual/included.bindings/}{supported by \LaTeXML{}} (note that some implementations are not complete)
   \item \href{http://docs.mathjax.org/en/v2.7-latest/}{MathJax v2.7} documentation
   \item List of \LaTeX{} commands \href{http://docs.mathjax.org/en/v2.7-latest/tex.html#supported-latex-commands}{supported by MathJax v2.7}
-  \item \href{http://docs.mathjax.org/en/v3.0-latest/}{MathJax v3.0} documentation
-  \item List of \LaTeX{} commands \href{http://docs.mathjax.org/en/v3.0-latest/input/tex/macros/index.html}{supported by MathJax v3.0}
+  \item \href{http://docs.mathjax.org/en/v3.1-latest/}{MathJax v3.1} documentation
+  \item List of \LaTeX{} commands \href{http://docs.mathjax.org/en/v3.1-latest/input/tex/macros/index.html}{supported by MathJax v3.1}
 \end{itemize}
 
 \end{document}
