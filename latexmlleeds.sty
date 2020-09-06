@@ -12,10 +12,10 @@
 \RequirePackage[T1]{fontenc}
 
 % Do nothing in normal LaTeX, output argument as HTML in LaTeXML
-\let\lxHTML\@gobble
+\let\ldsHTML\@gobble
 
 % Example:
-% \lxHTML{This appears <strong>only in the HTML-based outputs</strong>.}
+% \ldsHTML{This appears <strong>only in the HTML-based outputs</strong>.}
 
 %%% NOTES
 %
@@ -25,3 +25,6 @@
 % 2. The HTML is still interpreted as LaTeX code, hence it must be escaped
 %    appropriately. For instance, every { must be replaced by \{; every &
 %    must be replaced by \& (and probably be written as \&amp;).
+
+% DEPRECATED: \lxHTML is only defined for backward compatibility
+\let\lxHTML\ldsHTML

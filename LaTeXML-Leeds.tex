@@ -28,7 +28,7 @@
 
 \lstdefinestyle{latexml}{language=[LaTeX]TeX,%
   texcsstyle=[2]{\color{MidnightBlue}\bfseries},%
-  moretexcs=[2]{LaTeXML,iflatexml,lxHTML,lxAddClass,lxWithClass,lxBeginTableHead,lxEndTableHead,lxFcn,lxID,lxPunct,lxContextTOC,lxNavbar,lxHeader,lxFooter}%
+  moretexcs=[2]{LaTeXML,iflatexml,lxAddClass,lxWithClass,lxBeginTableHead,lxEndTableHead,lxFcn,lxID,lxPunct,lxContextTOC,lxNavbar,lxHeader,lxFooter,lxHTML,ldsHTML}%
   }
 
 \def\ltxinline{\lstinline[style=latexml]}
@@ -71,7 +71,7 @@
   \item Add
   \begin{lstlisting}[style=latexml]
 \usepackage{latexml} % for \iflatexml and other goodies
-\usepackage{latexmlleeds} % for \lxHTML, see below
+\usepackage{latexmlleeds} % for \ldsHTML, see below
   \end{lstlisting}
   to your preamble.
   \item Run the command below and see if there are errors.
@@ -104,7 +104,7 @@ latexmlc --splitat=chapter --css=latexmlleeds.css \
   I strongly recommend you put the output in a subfolder (the \verb|mynotes| in \verb|mynotes/myfile.html| above) since there will be additional files that need to travel together with the main \verb|myfile.html|.
 
   The option \verb|--splitat=| can split the output in various ways (part, chapter, section\dots{}) according to your needs. You \textbf{must} split long lecture notes, otherwise MathJax will take ages to render your formulas and EPUB readers will spend a long time paginating the content.
-  \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \ltxinline|\lxHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
+  \item If you wish to embed Stream videos into your notes, and for more advanced functionality, see \autoref{exa:embed-stream} below. The short story is that you may use the command \ltxinline|\ldsHTML{html}| to write arbitrary \HTML{} in your \LaTeX{} file, and that you may write in \verb|latexmlleeds.css| to tweak the style of your document. Armed with the two, you can create any custom command you like -- for instance, embed Forms quizzes, embed Mediasite videos, YouTube videos, and so on.
 \end{enumerate}
 
 \section{How to...}
@@ -172,13 +172,13 @@ done
 \end{enumerate}
 
 \subsection{...embed videos (WIP but functional)}
-The package \verb|latexmlleeds| provides the command \ltxinline|\lxHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
+The package \verb|latexmlleeds| provides the command \ltxinline|\ldsHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
 
 I recommend creating a command, like the \ltxinline|\includestream| below, to simplify embedding videos while also adding a link (the link is needed in PDF and EPUB). I have added a bit of \CSS{} to \verb|latexmlleeds.css| to make videos work well on all screens. Check the example \autoref{exa:embed-stream} and resize your browser to see how the video resizes accordingly. I will improve the \CSS{} in the near future to accommodate different video resolutions -- for now it expects $1280 \times 720$.
 \begin{lstlisting}[style=latexml]
   % preamble
   \newcommand{\includestream}[2]{
-  \lxHTML{<div class="ltx\_leeds\_video">
+  \ldsHTML{<div class="ltx\_leeds\_video">
       <iframe
         src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
         allowfullscreen="">
@@ -314,18 +314,18 @@ For reference, \verb|latexml| also defines the following, although you can work 
   \usepackage{latexmlleeds}
 \end{lstlisting}
 
-\verb|latexmlleeds| defines \ltxinline|\lxHTML{html}|, which outputs the \ltxinline|html| argument directly as \HTML{} code. The \ltxinline|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
+\verb|latexmlleeds| defines \ltxinline|\ldsHTML{html}|, which outputs the \ltxinline|html| argument directly as \HTML{} code. The \ltxinline|html| is only processed by \LaTeXML{} and ignored by the other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
 \begin{exa}
   Code:
   \begin{lstlisting}[style=latexml]
     This sentence appears in all versions.
-    \lxHTML{<span>But this part is
+    \ldsHTML{<span>But this part is
       <strong>only in the HTML outputs</strong>.</span>}
   \end{lstlisting}
   Output:
   \begin{quote}
     This sentence appears in all versions.
-    \lxHTML{<span>But this part is
+    \ldsHTML{<span>But this part is
     <strong>only in the HTML outputs</strong>.</span>}
   \end{quote}
 \end{exa}
@@ -342,7 +342,7 @@ Some notes:
   \begin{lstlisting}[style=latexml]
     % preamble
     \newcommand{\includestream}[2]{
-    \lxHTML{<div class="ltx\_leeds\_video">
+    \ldsHTML{<div class="ltx\_leeds\_video">
         <iframe
           src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
           allowfullscreen="">
@@ -358,7 +358,7 @@ Some notes:
   Output:
   \begin{quote}
     \newcommand{\includestream}[2]{
-      \lxHTML{<div class="ltx\_leeds\_video">
+      \ldsHTML{<div class="ltx\_leeds\_video">
           <iframe 
             src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
             allowfullscreen="">

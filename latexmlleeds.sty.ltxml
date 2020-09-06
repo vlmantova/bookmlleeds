@@ -20,8 +20,8 @@ my $parser = XML::LibXML->new();
 
 RequirePackage('fontenc', options => ['T1']);
 
-DefMacro('\lxHTML{}', '');
-DefConstructor('\lxHTML{}',
+DefMacro('\ldsHTML{}', '');
+DefConstructor('\ldsHTML{}',
   sub {
     my ($document, $arg) = @_;
 
