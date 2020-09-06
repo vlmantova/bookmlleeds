@@ -1,7 +1,6 @@
 \documentclass[a4paper]{article}
 
 \usepackage[nocomments]{latexml}
-\usepackage{latexmlleeds}
 
 \usepackage[pdfusetitle,colorlinks]{hyperref}
 \usepackage[dvipsnames]{xcolor}
@@ -36,6 +35,8 @@
 \usepackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{exa}{Example}[subsection]
+
+\usepackage{latexmlleeds}
 
 \title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
@@ -76,10 +77,14 @@
   You can download them from the \href{https://dev.azure.com/pmtvlm-leeds-ac-uk/public/_git/latexmlleeds}{\texttt{latexmlleeds} repository}, together with the \verb|.tex| source of this very document. Please submit a pull request if you have changes that should be made available to everyone (e.g.\ improved \CSS{}, other video or quiz embedding commands).
   \item Add
   \begin{lstlisting}[style=latexml]
-\usepackage{latexml} % for \iflatexml and other goodies
-\usepackage{latexmlleeds} % for \ldsHTML, see below
+% for \iflatexml and other goodies - whenever needed
+\usepackage{latexml}
+
+% to improve the HTML style, \ldsHTML and other goodies
+% use *after* loading all the other packages
+\usepackage{latexmlleeds}
   \end{lstlisting}
-  to your preamble.
+  to your preamble. You should add \verb|latexmlleeds| \emph{after} loading all the other packages.
   \item Run the command below and see if there are errors.
   \begin{lstlisting}[language=bash]
 latexml --destination=myfile.xml myfile.tex
