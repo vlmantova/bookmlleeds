@@ -30,23 +30,22 @@ body {
 
 /* Proof of concept styling for responsive videos */
 .lds_video {
-  position: relative;
-  width: 100%;
   max-width: 1280px;
-  max-height: 720px;
+}
+
+.lds_video > div {
+  position: relative;
+  padding-bottom: 56.25%; /* 56.25% = 1280/720 */
   height: 0;
-  padding-top: 56.25%;
-  padding-top: min(720px,56.25%);
   overflow: hidden;
 }
 
-.lds_video > iframe {
+.lds_video > div > iframe {
+  border:none;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  top: 0; left: 0; right: 0; bottom: 0;
   height: 100%;
-  border: none;
+  max-width: 100%;
 }
 
 /* DEPRECATED: ltx_leeds_video is only defined for backward compatibility */

@@ -184,12 +184,12 @@ I recommend creating a command, like the \ltxinline|\includestream| below, to si
 \begin{lstlisting}[style=latexml]
   % preamble
   \newcommand{\includestream}[2]{
-  \ldsHTML{<div class="lds\_video">
+  \ldsHTML{<div class="lds\_video"><div>
       <iframe
         src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
-        allowfullscreen="">
+        allowfullscreen="" width="1280" height="720">
       </iframe>
-    </div>}
+    </div></div>}
     Watch \href{https://web.microsoftstream.com/video/#1}{#2}
   }
   % document
@@ -344,16 +344,16 @@ Some notes:
 \end{itemize}
 
 \begin{exa}[Embed Stream videos]\label{exa:embed-stream}
-  This is only a proof of concept, but already functional: it embeds a video directly into \HTML{} and EPUB, and provides a link in all contexts (note that embedded videos may not work everywhere, especially with EPUB, so always include the link). The code is accompanied by some extra \CSS{} inside \verb|latexmlleeds.css| to make the video size responsive, however you must customize it to match the resolution of your videos (mine is $1280 \times 720$).
+  This is only a proof of concept, but already functional: it embeds a video directly into \HTML{} and EPUB, and provides a link in all contexts (note that embedded videos may not work everywhere, especially with EPUB, so always include the link). The code is accompanied by some extra \verb|<div>|'s and some \CSS{} inside \verb|latexmlleeds.css| to make the video responsive (the additional code is taken from Microsoft Stream). You should the code to match the resolution of your videos (mine is $1280 \times 720$).
   \begin{lstlisting}[style=latexml]
     % preamble
     \newcommand{\includestream}[2]{
-    \ldsHTML{<div class="lds\_video">
+    \ldsHTML{<div class="lds\_video"><div>
         <iframe
           src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
-          allowfullscreen="">
+          allowfullscreen="" width="1280" height="720">
         </iframe>
-      </div>}
+      </div></div>}
       Watch \href{https://web.microsoftstream.com/video/#1}{#2}
     }
     % document
@@ -364,12 +364,12 @@ Some notes:
   Output:
   \begin{quote}
     \newcommand{\includestream}[2]{
-      \ldsHTML{<div class="lds\_video">
+      \ldsHTML{<div class="lds\_video"><div>
           <iframe 
             src="https://web.microsoftstream.com/embed/video/#1?autoplay=false\&amp;showinfo=true"
-            allowfullscreen="">
+            allowfullscreen="" width="1280" height="720">
           </iframe>
-        </div>}
+        </div></div>}
       Watch \href{https://web.microsoftstream.com/video/#1}{#2}
     }
     \includestream{ba6b8866-df29-4dea-a47e-13decc5cd409}
