@@ -7,7 +7,8 @@ TARGETS=latexmlleeds.zip latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub
 all: $(TARGETS)
 
 clean:
-	-rm -f $(TARGETS) latexmlleeds
+	-rm -f $(TARGETS)
+	-rm -fr latexmlleeds
 
 latexmlleeds:
 	mkdir "$@"
