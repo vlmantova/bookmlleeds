@@ -20,10 +20,10 @@ latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css latexmlleeds-html5.x
 	latexmlpost \
 		--javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
 		--mathtex --svg --stylesheet=latexmlleeds-html5.xsl \
-		--css=latexmlleeds.css --destination="$@" "$<"
+		--destination="$@" "$<"
 
 latexmlleeds/%.epub: %.tex latexmlleeds.css
-	latexmlc --splitat=chapter --svg --css=latexmlleeds.css \
+	latexmlc --splitat=chapter --svg \
 		--destination="$@" "$<"
 
 latexmlleeds/%.pdf: %.tex latexmlleeds.sty

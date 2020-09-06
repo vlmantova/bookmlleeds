@@ -20,6 +20,8 @@ my $parser = XML::LibXML->new();
 
 RequirePackage('fontenc', options => ['T1']);
 
+RequireResource('latexmlleeds.css');
+
 # DEPRECATED: \lxHTML is only defined for backward compatibility
 DefMacro('\lxHTML{}', '\ldsHTML{#1}');
 
