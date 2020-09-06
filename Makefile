@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-.PRECIOUS: %.xml
+.PRECIOUS: %.xml %.pdf
 
 TARGETS=latexmlleeds.zip latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf
 
@@ -25,9 +25,11 @@ latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css LaTeXML-html5.xsl | 
 latexmlleeds/%.epub: %.tex $(XML_DEPS) latexmlleeds.css
 	latexmlc --splitat=chapter --svg --destination="$@" "$<"
 
-latexmlleeds/%.pdf: %.tex latexmlleeds.sty
+%.pdf: %.tex latexmlleeds.sty
 	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error" -pdf "$<"
-	mv -f "$*".pdf "$@"
+
+latexmlleeds/%.pdf: %.pdf
+	cp "$<" "$@"
 
 %.xml: %.tex $(XML_DEPS)
 	latexml --destination="$@" "$<"
