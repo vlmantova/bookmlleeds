@@ -66,7 +66,7 @@
 \section{Quick guide to \texorpdfstring{\LaTeXML{}}{LaTeXML} and \texttt{latexmlleeds}}
 \begin{enumerate}
   \item If you can, update your \LaTeXML{} to v0.8.4. Rumour is that v0.8.5 will be released ``this month''. Previous versions (0.8.2, 0.8.3) will generally work, but they support fewer packages, and the output will look a bit worse. This guide is only tested with version 0.8.4.
-  \item Copy the files below next to the \verb|.tex| source.
+  \item Copy \textbf{all} the files below next to the \verb|.tex| source.
   \begin{itemize}
     \item \verb|latexmlleeds.sty|
     \item \verb|latexmlleeds.sty.ltxml|
@@ -100,10 +100,8 @@ latexml --destination=myfile.xml myfile.tex
   \item Once everything is good, you can conclude with
   \begin{lstlisting}[language=bash]
 # to create the final HTML...
-latexmlpost \
-  --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
-  --mathtex --svg --destination=mynotes/myfile.html \
-  myfile.xml
+latexmlpost --mathtex --svg \
+  --destination=mynotes/myfile.html myfile.xml
 # ...and zip it for upload on Minerva
 zip -r mynotes.zip mynotes
 
@@ -238,20 +236,19 @@ latexmk -pdf LaTeXML-Leeds
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the EPUB}]
 latexmlc --splitat=chapter \
-  --destination=latexmlleeds/LaTeXML-Leeds.epub LaTeXML-Leeds.tex
+  --destination=latexmlleeds/LaTeXML-Leeds.epub \
+  LaTeXML-Leeds.tex
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the HTML}]
-latexmlc \
-  --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
-  --mathtex --destination=latexmlleeds/LaTeXML-Leeds.html \
-  --svg LaTeXML-Leeds.tex
+latexmlc --mathtex --svg \
+  --destination=latexmlleeds/LaTeXML-Leeds.html \
+  LaTeXML-Leeds.tex
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the HTML in two steps}]
 latexml --destination=LaTeXML-Leeds.xml LaTeXML-Leeds.tex
-latexmlpost \
-  --javascript="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
-  --mathtex --destination=latexmlleeds/LaTeXML-Leeds.html \
-  --svg LaTeXML-Leeds.xml
+latexmlpost --mathtex --svg \
+  --destination=latexmlleeds/LaTeXML-Leeds.html \
+  LaTeXML-Leeds.xml
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Do all the above steps in one go}]
 # This uses the Makefile included in latexmlleeds
@@ -261,15 +258,14 @@ make
 Meaning of the options:
 \begin{description}
   \item[\texttt{{-}{-}splitat=section}] Split the document into a separate \HTML{} page per section, linked to each other. The value can be chapter, section, subsection, subsubsection.
-  \item[\texttt{{-}{-}javascript=...}] Import the desired Javascript. Use it to include MathJax v3.0 (as in the example above) or v2.7.
-  \item[\texttt{{-}{-}mathtex}] Preserve the original \TeX{} code in maths formulas as annotations. With MathJax, the code appears by right-clicking on the formula and choosing ``Show Math As > Annotation > TeX''.
+  \item[\texttt{{-}{-}mathtex}] Add an equivalent \TeX{} code in maths formulas as annotation (it may slightly different from with the original code). With MathJax, the code appears by right-clicking on the formula and choosing ``Show Math As > Annotation > TeX''.
   \item[\texttt{{-}{-}svg}] Instruct \LaTeXML{} to use SVG as prefer image format. I have not tested this in real life, it may depend on having ImageMagick installed, and results may vary.
 \end{description}
 Further options that seem important enough (more will be added if they turn out to be relevant).
 \begin{description}
   \item[\texttt{{-}{-}navigationtoc=(context|none)}] The value used in this guide is the default (\verb|none|). The value \verb|context| should produce a traditional navigation bar with links to all the chapters, and additional links to sections in the current chapter. I have not tried it yet.
   \item[\texttt{{-}{-}css=style.css}] Import the \CSS{} \verb|style.css| in every page.
-  \item[\texttt{{-}{-}stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: the important settings are already customised in \verb|LaTeXML-html5.xsl|.
+  \item[\texttt{{-}{-}stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: the important settings are already customised in \verb|LaTeXML-html5.xsl| (see \autoref{sub:xslt} to make sure you do not miss a spot).
 \end{description}
 For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation} or run \verb|latexml --help|, \verb|latexmlpost --help|, \verb|latexmlc --help|.
 
@@ -380,11 +376,12 @@ Some notes:
 \end{exa}
 
 \subsection{The \texttt{LaTeXML-html5.xsl} customisations}
-Normally, you do not need to care about this file. The \verb|LaTeXML-html5.xsl| \XSLT{} stylesheet does only three things:
+\label{sub:xslt}
+Normally, you do not need to care about this file. The \verb|LaTeXML-html5.xsl| \XSLT{} stylesheet does three things:
 \begin{itemize}
-  \item make sure you output HTML5 (which would be the default, anyway);
-  \item it makes \HTML{} lists more accessible by ignoring custom enumerations (i.e., the \ltxinline|(a)| in \ltxinline|\item[(a)]|; you should modify your \CSS{} to do custom enumerations in \HTML{});
-  \item it adds modern HTML5 tags to make the output more mobile friendly, and removes the outdated \verb|Content-type| meta tag.
+  \item include the latest version of MathJax 3 as well as a compatibility polyfill for IE11;
+  \item make \HTML{} lists more accessible by ignoring custom enumerations (i.e., the \ltxinline|(a)| in \ltxinline|\item[(a)]|; you should modify your \CSS{} to do custom enumerations in \HTML{});
+  \item add modern HTML5 tags to make the output more mobile friendly while replacing the outdated \verb|Content-type| meta tag with \verb|charset|.
 \end{itemize}
 The \XSLT{} may be updated in the future to improve a few aspects of the resulting \HTML{}; for instance, we might discover that offloading the maths parsing entirely to MathJax is better overall, and this can only be done by tweaking the \XSLT{}.
 
