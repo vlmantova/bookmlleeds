@@ -39,7 +39,7 @@
 
 \title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
-\date{24 August 2020; last updated 26 August 2020}
+\date{24 August 2020}
 
 \begin{document}
 
@@ -51,8 +51,14 @@
   The hard work is done by \LaTeXML{}. If you want to see \LaTeXML{} in action, you can visit \href{https://www.arxiv-vanity.com/}{arXiv Vanity} and paste the link to one of your own preprints, or you can use the online \href{https://latexml.mathweb.org/editor}{demo \LaTeX{} editor} to type \LaTeX{} and check the \HTML{} output right in the browser (the page has several advanced examples, including TikZ pictures).
 
   The \verb|latexmlleeds| additions are a bunch of files that will make your output a bit more accessible and, above all, mobile friendly. Moreover, you can use the additions to get direct access to the \HTML{} output and, for instance, embed Stream or Mediasite videos right into the lecture notes.
-  \end{abstract}
+\end{abstract}
 
+\subsection*{Changes}
+\subsubsection*{2020/09/xx}
+\begin{itemize}
+  \item \verb|latexmlleeds|: rename \ltxinline{\lxHTML} to \ltxinline{\ldsHTML} to distinguish \verb|latexml| commands from the Leeds additions; \ltxinline{\lxHTML} is retained for backward compatibility.
+  \item \verb|docs|: improve syntax colouring of \LaTeX{} snippets (accidentally revealing a bug in the \LaTeXML{} binding for the package \verb|listings|).
+\end{itemize}
 
 \tableofcontents
 
