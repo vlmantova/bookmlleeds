@@ -131,9 +131,15 @@ If \LaTeXML{} claims that a macro has not been defined, that means that one of y
 There are at least four solutions.
 \begin{itemize}
   \item Replace the package with a suitable equivalent supported by \LaTeXML{}.
-  \item Use \ltxinline|\iflatexml| and \ltxinline|\newcommand| to define the macro so that it does something equivalent. This is sensible if the macro is only useful for PDF output (e.g.\ it refers to page numbers, it applies a certain style, etc.), or if the functionality is provided by a \LaTeXML{}-supported package but you prefer to use the original for the PDF.
-  \item Copy the missing definition from the package itself and add it to your preamble (usually within \ltxinline|\makeatletter| and \ltxinline|\makeatother|). Especially useful if the package is partially supported by \LaTeXML{}.
-  \item Add \verb|--includestyles| to \verb|latexml| and \verb|latexmlc|. This is dangerous, though! Some packages are actually meant to be ignored.
+  \item Use \ltxinline|\iflatexml| and \ltxinline|\newcommand| in the preamble to define the macro so that it does something equivalent. This is sensible if the macro is only useful for PDF output (e.g.\ it refers to page numbers, it applies a certain style, etc.), or if similar functionality is provided by a \LaTeXML{}-supported package but you would still like to use the unsupported package for the PDF output.
+  \item Copy the missing definition from the package itself and add it to your preamble (usually within \ltxinline|\makeatletter| and \ltxinline|\makeatother|). Especially useful if the missing command is from a package that is supported by \LaTeXML{} but not completely.
+  \item The nuclear option: add \verb|--includestyles| to \verb|latexml| and \verb|latexmlc|, which makes \LaTeXML{} compile the content all unrecognised classes and packages. For a slightly less drastic approach, if \verb|package| is not supported by \LaTeXML{}, write the following code in \verb|package.sty.ltxml| and put it in the same folder as the \verb|.tex| file (replace \verb|sty| with \verb|cls| everywhere if you are dealing with a class):
+  \begin{lstlisting}[language=Perl]
+    use LaTeXML::Package;
+    InputDefinitions('package', type => 'sty', noltxml => 1);
+    1;
+  \end{lstlisting}
+  The above file will tell \LaTeXML{} to compile \verb|package.sty|.
 \end{itemize}
 
 \subsection{...fix TikZ problems}
