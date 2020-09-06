@@ -20,7 +20,9 @@ my $parser = XML::LibXML->new();
 
 RequirePackage('fontenc', options => ['T1']);
 
-DefMacro('\ldsHTML{}', '');
+# DEPRECATED: \lxHTML is only defined for backward compatibility
+DefMacro('\lxHTML{}', '\ldsHTML{#1}');
+
 DefConstructor('\ldsHTML{}',
   sub {
     my ($document, $arg) = @_;
