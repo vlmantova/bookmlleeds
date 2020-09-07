@@ -8,11 +8,16 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{latexmlleeds}[2020/08/24 Leeds tweaks to latexml documents]
 
+% We need \iflatexml
+\RequirePackage{latexml}
+
 % We need T1 font encoding to parse correctly < and >
 \RequirePackage[T1]{fontenc}
 
+%%% Output HTML from LaTeX
 % Do nothing in normal LaTeX, output argument as HTML in LaTeXML
 \let\ldsHTML\@gobble
+\let\lxHTML\ldsHTML % DEPRECATED, only here for backward compatibility
 
 % Example:
 % \ldsHTML{This appears <strong>only in the HTML-based outputs</strong>.}
@@ -26,5 +31,38 @@
 %    appropriately. For instance, every { must be replaced by \{; every &
 %    must be replaced by \& (and probably be written as \&amp;).
 
-% DEPRECATED: \lxHTML is only defined for backward compatibility
-\let\lxHTML\ldsHTML
+\RequirePackage{xkeyval}
+
+%%% TikZ workaround
+
+\RequirePackage{environ}
+% environ uses \@checkend, which is not implemented by LaTeXML
+% below is a copy from latex.ltx
+\def\@checkend#1{\def\reserved@a{#1}\ifx
+      \reserved@a\@currenvir \else\@badend{#1}\fi}
+
+\DeclareOptionX{tikzextern}[images/TikZ-]{
+  \iflatexml
+    % create the picture counter
+    \newcounter{latexmlleeds@tikzpicturecounter}
+    % replace the tikzpicture environment with \includegraphics
+    % and increment the counter
+    \RenewEnviron{tikzpicture}{%
+    \includegraphics{#1\thelatexmlleeds@tikzpicturecounter} %
+    \stepcounter{latexmlleeds@tikzpicturecounter}}
+  \else
+    % ask TikZ to export all figures to external files
+    % recall to call pdflatex with the option -shell-escape to make this work
+    \tikzexternalize[figure name=#1]
+  \fi
+}
+
+\DeclareOptionX{tikz2svg}[pdf2svg]{
+  \iflatexml
+  \else
+    % extend the pdflatex call to also convert the output to SVG
+    \tikzset{external/system call={pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"; #1 "\image.pdf" "\image.svg"}}
+  \fi
+}
+
+\ProcessOptionsX

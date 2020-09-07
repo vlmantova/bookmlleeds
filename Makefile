@@ -26,7 +26,10 @@ latexmlleeds/%.epub: %.tex $(XML_DEPS) latexmlleeds.css
 	latexmlc --splitat=chapter --svg --destination="$@" "$<"
 
 %.pdf: %.tex latexmlleeds.sty
-	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error" -pdf "$<"
+	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error -shell-escape" -pdf "$<"
+
+%.dvi: %.tex latexmlleeds.sty
+	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error -shell-escape" "$<"
 
 latexmlleeds/%.pdf: %.pdf
 	cp "$<" "$@"

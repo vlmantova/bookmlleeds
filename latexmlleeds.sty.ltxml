@@ -12,19 +12,19 @@ use XML::LibXML;
 use strict;
 use warnings;
 
+# Load additional CSS
+RequireResource('latexmlleeds.css');
+
+# Parse the latexmlleeds.sty content first
+InputDefinitions('latexmlleeds', type => 'sty', noltxml => 1);
+
 # Ideally, we should use an HTML5 parser, however we want to minimise
 # the requirements, hence we stay with XML::LibXML
 # TODO detect at runtime if HTML::HTML5 is installed and use it
 # my $parser = HTML::HTML5::Parser->new(no_cache => 1);
 my $parser = XML::LibXML->new();
 
-RequirePackage('fontenc', options => ['T1']);
-
-RequireResource('latexmlleeds.css');
-
-# DEPRECATED: \lxHTML is only defined for backward compatibility
-DefMacro('\lxHTML{}', '\ldsHTML{#1}');
-
+# Redefine \ldsHTML{} when it is run by LaTeXML
 DefConstructor('\ldsHTML{}',
   sub {
     my ($document, $arg) = @_;

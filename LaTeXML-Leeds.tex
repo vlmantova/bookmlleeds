@@ -12,6 +12,13 @@
 
 \usepackage{tabularx}
 
+\iflatexml
+\RequirePackage{graphicx}
+\else
+\usepackage{tikz}
+\usetikzlibrary{external}
+\fi
+
 \usepackage{listings}
 \lstset{basicstyle={\small\ttfamily},%
   keywordstyle={\color{blue}\bfseries},%
@@ -36,7 +43,7 @@
 \theoremstyle{definition}
 \newtheorem{exa}{Example}[subsection]
 
-\usepackage{latexmlleeds}
+\usepackage[tikzextern,tikz2svg]{latexmlleeds}
 
 \title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
@@ -147,49 +154,57 @@ There are at least four solutions.
 \end{itemize}
 
 \subsection{...fix TikZ problems}
+\label{sub:tikz-howto}
 \LaTeXML{} has partial support for TikZ, however it may crash. Moreover, images may look blurry (try the \verb|--svg| option!) but I have not tested as my pictures just crashed.
 
-The best solution is to let \verb|pdflatex| generate the images and convert them to SVG via \verb|pdf2svg|.
-\begin{enumerate}
-  \item Add the following to your preamble.
-    \begin{lstlisting}[style=latexml]
-\iflatexml
-  % delete if already imported
-  \usepackage{graphicx}
-  % add more extensions if you have other pictures, e.g. JPG
-  \DeclareGraphicsExtensions{.svg,.SVG}
-  \newcounter{tikzpicturecounter}
-  \newcommand{\includetikzexternalized}{%
-    \includegraphics{images/TikZ-\thetikzpicturecounter}%
-    \stepcounter{tikzpicturecounter}}
-\else
-  \usepackage{tikz}
-  \tikzexternalize
-  \tikzsetfigurename{images/TikZ-}
-\fi
-    \end{lstlisting}
-  \item  Wrap every \ltxinline|\begin{tikzpicture} ... \end{tikzpicture}| within
-  \begin{lstlisting}[style=latexml]
-\iflatexml
-\includetikzexternalized
-\else
-\begin{tikzpicture}
-  ...
-\end{tikzpicture}
-\fi
-  \end{lstlisting}
-  \item Create the folder \verb|images| and run \verb|pdflatex| with the option \verb|-shell-escape|. This will generate the images.
+The package \verb|latexmlleeds| offers a workaround based on an idea of \href{https://github.com/brucemiller/LaTeXML/issues/945}{Matteo Seclì}, provided all your TikZ figures are between \ltxinline|\begin{tikzpicture}| and \ltxinline|\end{tikzpicture}|. \autoref{fig:tikz-example} is an example of a TikZ picture handled with this procedure.
 
-  \item Convert the images to SVG using \verb|pdf2svg|.
-    \begin{lstlisting}[language=bash]
-for file in images/TikZ-*.pdf
-  do pdf2svg $file ${file%.pdf}.svg
-done
-    \end{lstlisting}
+The easy way to proceed is the following (read \autoref{ssub:TikZ} for some technical details).
+\begin{enumerate}
+  \item Install \verb|pdf2svg|.
+  \item In the preamble, gate \ltxinline|\usepackage{tikz}| and any other TikZ-related command in the preamble behind \ltxinline|\iflatexml|, and add the \ltxinline|\usetikzlibrary{external}|. Furthermore, include the package \verb|graphicx|.
+      \begin{lstlisting}[style=latexml]
+\iflatexml
+  \usepackage{graphicx} % unless you already use graphicx
+\else
+  \usepackage{tikz} % LaTeXML must *not* see this
+  \usetikzlibrary{external}
+  % any other TikZ-related command should go here
+\fi
+      \end{lstlisting}
+  \item  Import \ltxinline|latexmlleeds| with the options \ltxinline|tikzextern| and \ltxinline|tikz2svg|.
+  \begin{lstlisting}[style=latexml]
+\usepackage[tikzextern,tikz2svg]{latexmlleeds}
+  \end{lstlisting}
+  \item Create the folder \verb|images| and run \verb|pdflatex| with the option \verb|-shell-escape|. This will populate \verb|images| with your TikZ figures.
   \item Now proceed with \verb|latexml|, \verb|latexmlpost|, \verb|latexmlc| as usual.
 \end{enumerate}
 
-WIP: integrate steps 1-2 into \verb|latexmlleeds|, so that \lstinline|\usepackage[tikzexternalize]{latexmlleeds}| has the same effect without changes to the \verb|.tex| code.
+The options \verb|tikzextern| and \verb|tikz2svg| accept some values, see \autoref{ssub:TikZ}.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \draw (0.5,0.5) node {$2$};
+      \draw (1.5,0.5) node {$+$};
+      \draw (3,0.5) node {$3$};
+      \draw (4.5,0.5) node {$=$};
+      \draw (7,0.5) node {$5$};
+      \draw (0,0) node [below] {$0$} -- (1,0) node [below] {$1$};
+      \draw (1.5,0) node {$+$};
+      \draw (2,0) node [below] {$0$} -- (3,0) node [below] {$1$} -- (4,0) node [below] {$2$};
+      \draw (4.5,0) node {$=$};
+      \draw (5,0) node [below] {$0$} -- (6,0) node [below] {$1$};
+      \draw [dashed] (6,0) -- (7,0);
+      \draw (7,0) node [below] {$2$} -- (8,0) node [below] {$3$} -- (9,0) node [below] {$4$};
+      \foreach \x in {0,1,2,3,4,5,6,7,8,9} {
+        \fill (\x,0) circle (0.05);
+      }
+    \end{tikzpicture}
+  \end{center}
+  \caption{Ordinal sum of $2$ and $3$.}
+  \label{fig:tikz-example}
+\end{figure}
 
 \subsection{...embed videos (WIP but functional)}
 The package \verb|latexmlleeds| provides the command \ltxinline|\ldsHTML| to generate \HTML{} directly in your \verb|.tex| files. Hence you can copy and paste the \HTML{} code that your platform gives you for embedding the video. You may need to edit the \HTML{} code because it needs to be valid \XML{} as well, see \autoref{sub:latexmlleeds-sty} (it's just a few touches).
@@ -331,7 +346,10 @@ For reference, \verb|latexml| also defines the following, although you can work 
   \usepackage{latexmlleeds}
 \end{lstlisting}
 
-\verb|latexmlleeds| makes \LaTeXML{} include \verb|latexmlleeds.css| (described below) and it defines \ltxinline|\ldsHTML{html}|, which outputs the \ltxinline|html| argument directly as \HTML{} code. The \ltxinline|html| is only processed by \LaTeXML{} and ignored by other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
+\verb|latexmlleeds| makes \LaTeXML{} include \verb|latexmlleeds.css| (see \autoref{sub:css}) and it offers some additional functionality.
+
+\subsubsection{Outputting \HTML{} code}
+\ltxinline|\ldsHTML{html}| outputs \ltxinline|html| argument directly as \HTML{} code. The \ltxinline|html| is only processed by \LaTeXML{} and ignored by other engines. The \LaTeXML{} processing is done by \verb|latexmlleeds.sty.lxtml|, which is a short Perl file you do not need to touch.
 \begin{exa}
   Code:
   \begin{lstlisting}[style=latexml]
@@ -388,6 +406,17 @@ Some notes:
   \end{quote}
 \end{exa}
 
+\subsubsection{Workaround for TikZ pictures}
+\label{ssub:TikZ}
+If your TikZ figures are crashing \LaTeXML{}, importing \verb|latexmlleeds| with the following options will hide your TikZ figures from \LaTeXML{}, while it will make \verb|pdflatex| output the images in the \verb|images| subfolder in PDF and SVG format. You will need to manually hide \ltxinline|\usepackage{tikz}| from \LaTeXML{} using \ltxinline|\iflatexml| and ensure that you call \ltxinline|\usetikzlibrary{external}|. See \autoref{sub:tikz-howto}, or the source of this file, for an example.
+\begin{description}
+  \item[\texttt{tikzextern}] When compiling to PDF, make TikZ export all TikZ pictures as images named \verb|images/TikZ-#.pdf| (where \verb|#| is a number); when compiling with \LaTeXML{}, replace all TikZ pictures with the corresponding images in \verb|images/TikZ-#.pdf|. \textbf{You need to pass the option \texttt{-shell-escape} to \texttt{pdflatex} for this to work.}
+  \item[\texttt{tikzextern=prefix}] Same as above, but replaces \verb|images/TikZ-| with \verb|prefix|.
+  \item[\texttt{tikz2svg}] When compiling to PDF, also create an SVG version of the images by running command \verb|pdf2svg images/TikZ-#.pdf images/TikZ-#.svg| (or \verb|pdf2svg prefix#.pdf images/prefix#.svg|). \textbf{You need to install \texttt{pdf2svg} for this to work.}
+  \item[\texttt{tikz2svg=command}] Same as above, but run \verb|command| instead of \verb|pdf2svg|.
+\end{description}
+Note that you must create the \verb|images| folder (or whatever folder appears in your \verb|prefix|) before running \verb|pdflatex|.
+
 \subsection{The \texttt{LaTeXML-html5.xsl} customisations}
 \label{sub:xslt}
 Normally, you do not need to care about this file. The \verb|LaTeXML-html5.xsl| \XSLT{} stylesheet does three things:
@@ -399,6 +428,7 @@ Normally, you do not need to care about this file. The \verb|LaTeXML-html5.xsl| 
 The \XSLT{} may be updated in the future to improve a few aspects of the resulting \HTML{}; for instance, we might discover that offloading the maths parsing entirely to MathJax is better overall, and this can only be done by tweaking the \XSLT{}.
 
 \subsection{The \texttt{latexmlleeds.css} customisations}
+\label{sub:css}
 This is where you can tweak the appearance of your \HTML{} files. For now, the basic \verb|latexmlleeds.css|
 \begin{itemize}
   \item sets the font to sans serif (trying to pick the best font available);
