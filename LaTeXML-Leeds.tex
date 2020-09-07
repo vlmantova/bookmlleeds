@@ -160,9 +160,11 @@ There are at least four solutions.
 
 \subsection{...fix TikZ problems}
 \label{sub:tikz-howto}
-\LaTeXML{} has partial support for TikZ, however it may crash. Moreover, images may look blurry (try the \verb|--svg| option!) but I have not tested as my pictures just crashed.
+\LaTeXML{} has partial support for TikZ, however it may crash. Moreover, images may look blurry (try the \verb|--svg| option!) but I have not tested this as my pictures just crashed.
 
 The package \verb|latexmlleeds| offers a workaround based on an idea of \href{https://github.com/brucemiller/LaTeXML/issues/945}{Matteo Seclì}, provided all your TikZ figures are between \ltxinline|\begin{tikzpicture}| and \ltxinline|\end{tikzpicture}|. \autoref{fig:tikz-example} is an example of a TikZ picture handled with this procedure.
+
+\textbf{For pre-2020/09/07 workaround users.} The new implementation is backward compatible with \ltxinline|\includetikzexternalized|. Just make sure to write the command \ltxinline|\usepackage[tikzextern,tikz2svg]{latexmlleeds}| \textbf{after} the definition of \ltxinline|\includetikzexternalized| -- \verb|latexmlleeds| will override it with its own version. The old definition of \ltxinline|\includetikzexternalized|, as well as the piece of code \ltxinline|\iflatexml\includetikzexternalized\else ... \fi| wrapping each environment \ltxinline|\begin{tikzpicture}...\end{tikzpicture}|, are now superfluous, but they will keep working as intended.
 
 The easy way to proceed is the following (read \autoref{ssub:TikZ} for some technical details).
 \begin{enumerate}

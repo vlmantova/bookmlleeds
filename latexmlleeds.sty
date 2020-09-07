@@ -45,11 +45,20 @@
   \iflatexml
     % create the picture counter
     \newcounter{latexmlleeds@tikzpicturecounter}
-    % replace the tikzpicture environment with \includegraphics
-    % and increment the counter
-    \RenewEnviron{tikzpicture}{%
-    \includegraphics{#1\thelatexmlleeds@tikzpicturecounter} %
-    \stepcounter{latexmlleeds@tikzpicturecounter}}
+
+    % set up tikzpicture replacement: include the image and
+    % increment the counter
+    \newcommand{\latexmlleeds@includetikzexternalized}{%
+      \includegraphics{#1\thelatexmlleeds@tikzpicturecounter}%
+      \stepcounter{latexmlleeds@tikzpicturecounter}%
+    }
+
+    % replace the tikzpicture environment with
+    % \latexmlleeds@includetikzexternalized
+    \RenewEnviron{tikzpicture}{\latexmlleeds@includetikzexternalized}
+
+    % DEPRECATED: included for backward compatibility
+    \let\includetikzexternalized\latexmlleeds@includetikzexternalized
   \else
     % ask TikZ to export all figures to external files
     % recall to call pdflatex with the option -shell-escape to make this work
