@@ -24,7 +24,8 @@
   keywordstyle={\color{blue}\bfseries},%
   keywordstyle=[2]{\color{MidnightBlue}\bfseries},%
   stringstyle={\color{red}},%
-  commentstyle={\color{OliveGreen}}%
+  commentstyle={\color{OliveGreen}},%
+  frame=lines%
 }
 
 \lstdefinelanguage{CSS}{sensitive,
@@ -38,7 +39,7 @@
   moretexcs=[2]{LaTeXML,iflatexml,lxAddClass,lxWithClass,lxBeginTableHead,lxEndTableHead,lxFcn,lxID,lxPunct,lxContextTOC,lxNavbar,lxHeader,lxFooter,lxHTML,ldsHTML}%
   }
 
-\def\ltxinline{\lstinline[style=latexml]}
+\def\ltxinline{\lstinline[style=latexml,frame=none]}
 
 \usepackage{amsthm}
 \theoremstyle{definition}
