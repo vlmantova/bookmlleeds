@@ -71,7 +71,7 @@
 \subsubsection*{2020/09/07}
 \begin{itemize}
   \item \verb|latexmlleeds|: rename \ltxinline|\lxHTML| to \ltxinline|\ldsHTML| to distinguish \verb|latexml| commands from the Leeds additions; \ltxinline|\lxHTML| is retained for backward compatibility.
-  \item \verb|latexmlleeds|: the additional \CSS{}, the custom \XSLT{}, and MathJax are now loaded automatically, simplifying considerably the calls to \verb|latexml| and \verb|latexmlpost| (in particular: \verb|latexmlleeds-html5.xsl| has been renamed \verb|LaTeXML-html5.xsl|, so delete the old file after downloading the new one).
+  \item \verb|latexmlleeds|: the additional \CSS{}, the custom \XSLT{}, and MathJax are now loaded automatically, simplifying considerably the calls to \verb|latexml| and \verb|latexmlpost| (in particular: \verb|latexmlleeds-html5.xsl| has been renamed \verb|LaTeXML-html5.xsl|, so delete the old file after downloading the new one). \textbf{Warning:} you must stop using the \verb|--stylesheet|, \verb|--css| and \verb|--javascript| options from the pre-2020/09/07 instructions, unless it is for your own customizations.
   \item \verb|latexmlleeds|: fully integrate the TikZ workaround with the package options \verb|tikzextern| and \verb|tikz2svg|.
   \item \verb|docs|: improve syntax colouring of \LaTeX{} snippets (accidentally revealing a bug in the \LaTeXML{} binding for the package \verb|listings|).
   \item \verb|docs|: explain how to deal with unsupported packages in a more sophisticated way, short of writing your our \LaTeXML{} binding.
