@@ -63,6 +63,12 @@
 \end{abstract}
 
 \subsection*{Changes}
+\subsubsection*{2020/09/17}
+\begin{itemize}
+  \item \verb|latexmlleeds|: scale TikZ images properly regardless of the availability of ImageMagick. The behaviour can be tuned with the option \verb|tikzscale=factor|.
+  \item \verb|latexmlleeds|: implement an additional TikZ workaround for \verb|tikz-cd| that can be enabled by passing the option \verb|tikzcd|.
+  \item \verb|latexmlleeds|: the TikZ workaround is more robust and it requires even fewer changes (you do not need to import \verb|graphicx| or \verb|external| explicitly any more).
+\end{itemize}
 \subsubsection*{2020/09/07+\texorpdfstring{$\varepsilon$}{ɛ}}
 \begin{itemize}
   \item \verb|latexmlleeds|: make TikZ workaround implementation compatible with the previous approach, so that the old code and the new can coexist without changes.
@@ -176,13 +182,11 @@ Unfortunately \verb|tikz-cd| is not compatible with this approach out of the box
 The easy way to proceed is the following (read \autoref{ssub:TikZ} for some technical details).
 \begin{enumerate}
   \item Install \verb|pdf2svg|.
-  \item In the preamble, gate \ltxinline|\usepackage{tikz}| and any other TikZ-related command in the preamble behind \ltxinline|\iflatexml|, and add the \ltxinline|\usetikzlibrary{external}|. Furthermore, include the package \verb|graphicx|.
+  \item In the preamble, gate \ltxinline|\usepackage{tikz}| and any other TikZ-related command in the preamble behind \ltxinline|\iflatexml|.
       \begin{lstlisting}[style=latexml]
 \iflatexml
-  \usepackage{graphicx} % unless you already use graphicx
 \else
   \usepackage{tikz} % LaTeXML must *not* see this
-  \usetikzlibrary{external}
   % any other TikZ-related command should go here
 \fi
       \end{lstlisting}
