@@ -2,15 +2,18 @@
 
 .PRECIOUS: %.xml %.pdf
 
-TARGETS=latexmlleeds.zip latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf
+TARGETS=latexmlleeds.zip latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf LaTeXML-Leeds.xml LaTeXML-Leeds.pdf
 
-XML_DEPS=latexmlleeds.sty latexmlleeds.sty.ltxml LaTeXML-Leeds.pdf
+XML_DEPS=latexmlleeds.sty latexmlleeds.sty.ltxml
+
+IMG_DEPS=LaTeXML-Leeds.pdf
 
 all: $(TARGETS)
 
 clean:
 	-rm -f $(TARGETS)
 	-rm -fr images latexmlleeds
+	-rm -f $(addprefix LaTeXML-Leeds.,aux auxlock fdb_latexmk fls log out synctex.gz toc)
 
 images:
 	mkdir "$@"
@@ -37,5 +40,5 @@ latexmlleeds/%.epub: %.tex latexmlleeds.css $(XML_DEPS)
 latexmlleeds/%.pdf: %.pdf
 	cp "$<" "$@"
 
-%.xml: %.tex $(XML_DEPS)
+%.xml: %.tex $(XML_DEPS) $(IMG_DEPS)
 	latexml --destination="$@" "$<"
