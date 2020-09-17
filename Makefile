@@ -4,13 +4,16 @@
 
 TARGETS=latexmlleeds.zip latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf
 
-XML_DEPS=latexmlleeds.sty latexmlleeds.sty.ltxml
+XML_DEPS=latexmlleeds.sty latexmlleeds.sty.ltxml LaTeXML-Leeds.pdf
 
 all: $(TARGETS)
 
 clean:
 	-rm -f $(TARGETS)
-	-rm -fr latexmlleeds
+	-rm -fr images latexmlleeds
+
+images:
+	mkdir "$@"
 
 latexmlleeds:
 	mkdir "$@"
@@ -22,7 +25,7 @@ latexmlleeds.zip: latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexm
 latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css LaTeXML-html5.xsl | latexmlleeds
 	latexmlpost --mathtex --svg --destination="$@" "$<"
 
-latexmlleeds/%.epub: %.tex $(XML_DEPS) latexmlleeds.css
+latexmlleeds/%.epub: %.tex latexmlleeds.css $(XML_DEPS)
 	latexmlc --splitat=chapter --svg --destination="$@" "$<"
 
 %.pdf: %.tex latexmlleeds.sty
