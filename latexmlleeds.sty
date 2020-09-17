@@ -53,6 +53,11 @@
   \def\LDS@tikztosvg{#1}
 }
 
+\def\LDS@tikzscale{1.333}
+\DeclareOptionX{tikzscale}{
+  \def\LDS@tikzscale{#1}
+}
+
 \ProcessOptionsX
 
 \ifLDS@tikzextern
@@ -99,12 +104,11 @@
       pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"; %
       % convert using pdf2svg
       \LDS@tikztosvg\space "\image.pdf" "\image.svg" ; %
-      % scale up the SVG by the factor 1.33 = 96 (dpi on web) / 72 (dpi on PDF)
-      % it suffices to multiply width and height by 1.33
+      % convert points to pixels using the formula 1 pixel = 1.333 points
       % for readability, the actual command is:
       % perl -pi.orig -e 's/(width|height)="(\d+\.\d+)pt"/$1."=\"".sprintf("\%.3f",$2*1.33)."pt\""/eg' "\image.svg"
       % apologies for the perl golf
-      perl -pi.orig -e 's/(width|height)="(\@backslashchar d+\@backslashchar.\@backslashchar d+)pt"/\string$1."=\@backslashchar"".sprintf("\%.3f",\string$2*1.33)."pt\@backslashchar""/eg' "\image.svg"%
+      perl -pi.orig -e 's/(width|height)="(\@backslashchar d+\@backslashchar.\@backslashchar d+)pt"/\string$1."=\@backslashchar"".int(\string$2*\LDS@tikzscale)."px\@backslashchar""/eg' "\image.svg"%
     }}
   \fi
 \fi
