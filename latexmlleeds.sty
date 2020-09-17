@@ -70,7 +70,18 @@
   \iflatexml
   \else
     % extend the pdflatex call to also convert the output to SVG
-    \tikzset{external/system call={pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"; #1 "\image.pdf" "\image.svg"}}
+    \tikzset{external/system call={%
+    % call pdflatex (this is the TikZ default as per documentation)
+    pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"; %
+    % convert using pdf2svg
+    #1 "\image.pdf" "\image.svg" ; %
+    % scale up the SVG by the factor 1.33 = 96 (dpi on web) / 72 (dpi on PDF)
+    % it suffices to multiply width and height by 1.33
+    % for readability, the actual command is:
+    % perl -pi.orig -e 's/(width|height)="(\d+\.\d+)pt"/$1."=\"".sprintf("\%.3f",$2*1.33)."pt\""/eg' "\image.svg"
+    % apologies for the perl golf
+    perl -pi.orig -e 's/(width|height)="(\@backslashchar d+\@backslashchar.\@backslashchar d+)pt"/\string$1."=\@backslashchar"".sprintf("\%.3f",\string$2*1.33)."pt\@backslashchar""/eg' "\image.svg"%
+    }}
   \fi
 }
 
