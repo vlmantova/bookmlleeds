@@ -35,54 +35,76 @@
 
 %%% TikZ workaround
 
-\RequirePackage{environ}
-% environ uses \@checkend, which is not implemented by LaTeXML
-% below is a copy from latex.ltx
-\def\@checkend#1{\def\reserved@a{#1}\ifx
-      \reserved@a\@currenvir \else\@badend{#1}\fi}
+\newif\ifLDS@tikzextern
+\newif\ifLDS@tikztosvg
 
 \DeclareOptionX{tikzextern}[images/TikZ-]{
+  \LDS@tikzexterntrue
+  \def\LDS@tikzextern{#1}
+}
+
+\DeclareOptionX{tikz2svg}[pdf2svg]{
+  \ifdefined\LDS@tikzextern
+  \else
+    \LDS@tikzexterntrue
+    \def\LDS@tikzextern{\LDS@tikzextern@default}
+  \fi
+  \LDS@tikztosvgtrue
+  \def\LDS@tikztosvg{#1}
+}
+
+\ProcessOptionsX
+
+\ifLDS@tikzextern
   \iflatexml
+    \RequirePackage{graphicx}
+    \RequirePackage{environ}
+    % environ uses \@checkend, which is not implemented by LaTeXML
+    % below is a copy from latex.ltx
+    \def\@checkend#1{\def\reserved@a{#1}\ifx
+          \reserved@a\@currenvir \else\@badend{#1}\fi}
+
     % create the picture counter
-    \newcounter{latexmlleeds@tikzpicturecounter}
+    \newcounter{LDS@tikzpicturecounter}
 
     % set up tikzpicture replacement: include the image and
     % increment the counter
-    \newcommand{\latexmlleeds@includetikzexternalized}{%
-      \includegraphics{#1\thelatexmlleeds@tikzpicturecounter}%
-      \stepcounter{latexmlleeds@tikzpicturecounter}%
+    \newcommand{\LDS@includetikzexternalized}{%
+      \includegraphics{\LDS@tikzextern\theLDS@tikzpicturecounter}%
+      \stepcounter{LDS@tikzpicturecounter}%
     }
 
     % replace the tikzpicture environment with
     % \latexmlleeds@includetikzexternalized
-    \RenewEnviron{tikzpicture}{\latexmlleeds@includetikzexternalized}
+    \RenewEnviron{tikzpicture}{\LDS@includetikzexternalized}
 
     % DEPRECATED: included for backward compatibility
-    \let\includetikzexternalized\latexmlleeds@includetikzexternalized
+    \let\includetikzexternalized\LDS@includetikzexternalized
   \else
+    \RequirePackage{tikz}
+    \usetikzlibrary{external}
+
     % ask TikZ to export all figures to external files
     % recall to call pdflatex with the option -shell-escape to make this work
-    \tikzexternalize[figure name=#1]
+    \tikzexternalize[figure name=\LDS@tikzextern]
   \fi
-}
+\fi
 
-\DeclareOptionX{tikz2svg}[pdf2svg]{
+\ifLDS@tikztosvg
   \iflatexml
   \else
     % extend the pdflatex call to also convert the output to SVG
     \tikzset{external/system call={%
-    % call pdflatex (this is the TikZ default as per documentation)
-    pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"; %
-    % convert using pdf2svg
-    #1 "\image.pdf" "\image.svg" ; %
-    % scale up the SVG by the factor 1.33 = 96 (dpi on web) / 72 (dpi on PDF)
-    % it suffices to multiply width and height by 1.33
-    % for readability, the actual command is:
-    % perl -pi.orig -e 's/(width|height)="(\d+\.\d+)pt"/$1."=\"".sprintf("\%.3f",$2*1.33)."pt\""/eg' "\image.svg"
-    % apologies for the perl golf
-    perl -pi.orig -e 's/(width|height)="(\@backslashchar d+\@backslashchar.\@backslashchar d+)pt"/\string$1."=\@backslashchar"".sprintf("\%.3f",\string$2*1.33)."pt\@backslashchar""/eg' "\image.svg"%
+      % call pdflatex (this is the TikZ default as per documentation)
+      pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"; %
+      % convert using pdf2svg
+      \LDS@tikztosvg\space "\image.pdf" "\image.svg" ; %
+      % scale up the SVG by the factor 1.33 = 96 (dpi on web) / 72 (dpi on PDF)
+      % it suffices to multiply width and height by 1.33
+      % for readability, the actual command is:
+      % perl -pi.orig -e 's/(width|height)="(\d+\.\d+)pt"/$1."=\"".sprintf("\%.3f",$2*1.33)."pt\""/eg' "\image.svg"
+      % apologies for the perl golf
+      perl -pi.orig -e 's/(width|height)="(\@backslashchar d+\@backslashchar.\@backslashchar d+)pt"/\string$1."=\@backslashchar"".sprintf("\%.3f",\string$2*1.33)."pt\@backslashchar""/eg' "\image.svg"%
     }}
   \fi
-}
-
-\ProcessOptionsX
+\fi
