@@ -13,10 +13,9 @@
 \usepackage{tabularx}
 
 \iflatexml
-\RequirePackage{graphicx}
 \else
 \usepackage{tikz}
-\usetikzlibrary{external}
+\usetikzlibrary{cd}
 \fi
 
 \usepackage{listings}
@@ -45,7 +44,7 @@
 \theoremstyle{definition}
 \newtheorem{exa}{Example}[subsection]
 
-\usepackage[tikzextern,tikz2svg]{latexmlleeds}
+\usepackage[tikzextern,tikz2svg,tikzcd]{latexmlleeds}
 
 \title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
@@ -170,6 +169,8 @@ There are at least four solutions.
 
 The package \verb|latexmlleeds| offers a workaround based on an idea of \href{https://github.com/brucemiller/LaTeXML/issues/945}{Matteo Seclì}, provided all your TikZ figures are between \ltxinline|\begin{tikzpicture}| and \ltxinline|\end{tikzpicture}|. \autoref{fig:tikz-example} is an example of a TikZ picture handled with this procedure.
 
+Unfortunately \verb|tikz-cd| is not compatible with this approach out of the box, so \verb|latexmlleeds| offers a workaround for \verb|tikz-cd| as well, based on a Stack Exchange \href{https://tex.stackexchange.com/questions/171931/are-the-tikz-libraries-cd-and-external-incompatible-with-one-another#362104}{thread}. Add the \verb|tikzcd| option to \verb|latexmlleeds| and ensure your diagrams are between \ltxinline|\begin{tikzcd}| and \ltxinline|\end{tikzcd}|. The \verb|tikzcd| option will change the meaning of \ltxinline|&| slightly, but I have not seen bad side effects just yet. See \autoref{fig:tikzcd-example} for an example.
+
 \textbf{For pre-2020/09/07 workaround users.} The new implementation is backward compatible with \ltxinline|\includetikzexternalized|. Just make sure to write the command \ltxinline|\usepackage[tikzextern,tikz2svg]{latexmlleeds}| \textbf{after} the definition of \ltxinline|\includetikzexternalized| -- \verb|latexmlleeds| will override it with its own version. The old definition of \ltxinline|\includetikzexternalized|, as well as the piece of code \ltxinline|\iflatexml\includetikzexternalized\else ... \fi| wrapping each environment \ltxinline|\begin{tikzpicture}...\end{tikzpicture}|, are now superfluous, but they will keep working as intended.
 
 The easy way to proceed is the following (read \autoref{ssub:TikZ} for some technical details).
@@ -185,9 +186,13 @@ The easy way to proceed is the following (read \autoref{ssub:TikZ} for some tech
   % any other TikZ-related command should go here
 \fi
       \end{lstlisting}
-  \item  Import \ltxinline|latexmlleeds| with the options \ltxinline|tikzextern| and \ltxinline|tikz2svg|.
+  \item  Import \ltxinline|latexmlleeds| with the options \ltxinline|tikzextern|, \ltxinline|tikz2svg|, and optionally \ltxinline|tikzcd|.
   \begin{lstlisting}[style=latexml]
+% for most users
 \usepackage[tikzextern,tikz2svg]{latexmlleeds}
+
+% for users of tikz-cd
+\usepackage[tikzextern,tikz2svg,tikzcd]{latexmlleeds}
   \end{lstlisting}
   \item Create the folder \verb|images| and run \verb|pdflatex| with the option \verb|-shell-escape|. This will populate \verb|images| with your TikZ figures.
   \item Now proceed with \verb|latexml|, \verb|latexmlpost|, \verb|latexmlc| as usual.
@@ -217,6 +222,17 @@ The options \verb|tikzextern| and \verb|tikz2svg| accept some values, see \autor
   \end{center}
   \caption{Ordinal sum of $2$ and $3$.}
   \label{fig:tikz-example}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzcd}
+          A \arrow[rd] \arrow[r, "\phi"] & B \\
+                                        & C
+    \end{tikzcd}
+  \end{center}
+  \caption{Example of tikzcd diagram.}
+  \label{fig:tikzcd-example}
 \end{figure}
 
 \subsection{...embed videos (WIP but functional)}
@@ -309,7 +325,6 @@ Further options that seem important enough (more will be added if they turn out 
   \item[\texttt{{-}{-}stylesheet=...}] Use an alternative \XSLT{} stylesheet in place of the standard ones. You probably do not want to touch this option: the important settings are already customised in \verb|LaTeXML-html5.xsl| (see \autoref{sub:xslt} to see what the customisations do on top of \LaTeXML{}).
 \end{description}
 For the full list of options, visit the \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation} or run \verb|latexml --help|, \verb|latexmlpost --help|, \verb|latexmlc --help|.
-
 
 \section{Documentation}
 
@@ -427,6 +442,8 @@ If your TikZ figures are crashing \LaTeXML{}, importing \verb|latexmlleeds| with
   \item[\texttt{tikzextern=prefix}] Same as above, but replaces \verb|images/TikZ-| with \verb|prefix|.
   \item[\texttt{tikz2svg}] When compiling to PDF, also create an SVG version of the images by running command \verb|pdf2svg images/TikZ-#.pdf images/TikZ-#.svg| (or \verb|pdf2svg prefix#.pdf images/prefix#.svg|). \textbf{You need to install \texttt{pdf2svg} for this to work.}
   \item[\texttt{tikz2svg=command}] Same as above, but run \verb|command| instead of \verb|pdf2svg|.
+  \item[\texttt{tikzscale=factor}] When converting to SVG, scale the output for the web by \verb|factor|. The default setting if you do not pass \verb|tikzscale| is \verb|1.333| (since PDF content uses 72 points per inch, while web content uses 96 points per inch).
+  \item[\texttt{tikzcd}] Enable an additional workaround for the \verb|tikz-cd| library, which is not compatible with \verb|tikzextern| out of the box.
 \end{description}
 Note that you must create the \verb|images| folder (or whatever folder appears in your \verb|prefix|) before running \verb|pdflatex|.
 

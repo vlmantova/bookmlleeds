@@ -37,6 +37,7 @@
 
 \newif\ifLDS@tikzextern
 \newif\ifLDS@tikztosvg
+\newif\ifLDS@tikzcd
 
 \DeclareOptionX{tikzextern}[images/TikZ-]{
   \LDS@tikzexterntrue
@@ -56,6 +57,15 @@
 \def\LDS@tikzscale{1.333}
 \DeclareOptionX{tikzscale}{
   \def\LDS@tikzscale{#1}
+}
+
+\DeclareOptionX{tikzcd}{
+  \ifdefined\LDS@tikzextern
+  \else
+    \LDS@tikzexterntrue
+    \def\LDS@tikzextern{\LDS@tikzextern@default}
+  \fi
+  \LDS@tikzcdtrue
 }
 
 \ProcessOptionsX
@@ -110,5 +120,41 @@
       % apologies for the perl golf
       perl -pi.orig -e 's/(width|height)="(\@backslashchar d+\@backslashchar.\@backslashchar d+)pt"/\string$1."=\@backslashchar"".int(\string$2*\LDS@tikzscale)."px\@backslashchar""/eg' "\image.svg"%
     }}
+  \fi
+\fi
+
+\ifLDS@tikzcd
+  % tikz-cd is not compatible with the external TikZ library
+  % this makes tikz-cd compatible with external using a workaround based on
+  % https://tex.stackexchange.com/questions/171931/are-the-tikz-libraries-cd-and-external-incompatible-with-one-another
+  \RequirePackage{environ}
+
+  % replace & with an active character
+  % Q: will this have side effect?
+  \def\LDS@ampersand{&} \catcode`&=\active \let&=\LDS@ampersand
+
+  \iflatexml
+    \RenewEnviron{tikzcd}{\LDS@includetikzexternalized}
+  \else
+    \RequirePackage{etoolbox}
+
+    \usetikzlibrary{cd}
+
+    % save tikzcd original environment
+    \let\LDS@tikzcd\tikzcd
+    \let\LDS@endtikzcd\endtikzcd
+
+    % wrap tikzcd into tikzpicture
+    \newcommand{\LDS@tikzcd@wrap}[2]{%
+      \begin{tikzpicture}[baseline=(ldsTikZcdnode.base)]%
+        \node (ldsTikZcdnode) [inner sep=0, outer sep=0] {\LDS@tikzcd[#2]%
+            #1 %
+        \LDS@endtikzcd};%
+      \end{tikzpicture}}
+    \RenewEnviron{tikzcd}[1][]{%
+      \def\LDS@tikzcd@args{#1}%
+      \edef\LDS@tikzcd@cmd{\noexpand\LDS@tikzcd@wrap{\expandonce\BODY}{\expandonce\LDS@tikzcd@args}}%
+      \LDS@tikzcd@cmd%
+    }
   \fi
 \fi
