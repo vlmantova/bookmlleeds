@@ -28,11 +28,11 @@ latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css LaTeXML-html5.xsl | 
 latexmlleeds/%.epub: %.tex latexmlleeds.css $(XML_DEPS)
 	latexmlc --splitat=chapter --svg --destination="$@" "$<"
 
-%.pdf: %.tex latexmlleeds.sty
-	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error -shell-escape" -pdf "$<"
+%.pdf: %.tex latexmlleeds.sty | images
+	latexmk -latexoption="-interaction=nonstopmode -halt-on-error -shell-escape" -pdf "$<"
 
-%.dvi: %.tex latexmlleeds.sty
-	latexmk -latexoption="-interaction=noninteractionmode -halt-on-error -shell-escape" "$<"
+%.dvi: %.tex latexmlleeds.sty | images
+	latexmk -latexoption="-interaction=nonstopmode -halt-on-error -shell-escape" "$<"
 
 latexmlleeds/%.pdf: %.pdf
 	cp "$<" "$@"
