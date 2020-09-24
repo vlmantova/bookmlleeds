@@ -63,6 +63,12 @@
 \end{abstract}
 
 \subsection*{Changes}
+\subsubsection*{2020/09/24}
+\begin{itemize}
+  \item \verb|css|: fix a problem with nested ordered lists not making any sense (sorry!).
+  \item \verb|docs|: clarify that \verb|tikzpicture| and \verb|tikzcd| are not supported in mathematical mode.
+  \item \verb|docs|: explain that \verb|xymatrix| is not supported.
+\end{itemize}
 \subsubsection*{2020/09/17}
 \begin{itemize}
   \item \verb|latexmlleeds|: scale TikZ images properly regardless of the availability of ImageMagick. The behaviour can be tuned with the option \verb|tikzscale=factor|.
@@ -177,6 +183,8 @@ The package \verb|latexmlleeds| offers a workaround based on an idea of \href{ht
 
 Unfortunately \verb|tikz-cd| is not compatible with this approach out of the box, so \verb|latexmlleeds| offers a workaround for \verb|tikz-cd| as well, based on a Stack Exchange \href{https://tex.stackexchange.com/questions/171931/are-the-tikz-libraries-cd-and-external-incompatible-with-one-another#362104}{thread}. Add the \verb|tikzcd| option to \verb|latexmlleeds| and ensure your diagrams are between \ltxinline|\begin{tikzcd}| and \ltxinline|\end{tikzcd}|. The \verb|tikzcd| option will change the meaning of \ltxinline|&| slightly, but I have not seen bad side effects just yet. See \autoref{fig:tikzcd-example} for an example.
 
+Note that \verb|latexmlleeds| does not support using \verb|tikzpicture| and \verb|tikzcd| in mathematical mode, such as between \ltxinline|\[...\]| or \ltxinline|\begin{equation}...\end{equation}|.
+
 \textbf{For pre-2020/09/07 workaround users.} The new implementation is backward compatible with \ltxinline|\includetikzexternalized|. Just make sure to write the command \ltxinline|\usepackage[tikzextern,tikz2svg]{latexmlleeds}| \textbf{after} the definition of \ltxinline|\includetikzexternalized| -- \verb|latexmlleeds| will override it with its own version. The old definition of \ltxinline|\includetikzexternalized|, as well as the piece of code \ltxinline|\iflatexml\includetikzexternalized\else ... \fi| wrapping each environment \ltxinline|\begin{tikzpicture}...\end{tikzpicture}|, are now superfluous, but they will keep working as intended.
 
 The easy way to proceed is the following (read \autoref{ssub:TikZ} for some technical details).
@@ -262,6 +270,9 @@ I recommend creating a command, like the \ltxinline|\includestream| below, to si
 Tables generally work fine, although Mart\'in managed to trigger some interesting bugs using nested tables. As a general rule, if you are nesting tables, check if \verb|multirow| and \verb|multicol| (both supported by \LaTeXML{}) can give the same result.
 
   For accessibility, it is good practice to add hints about table headers. The \verb|latexml| provides a few commands like \ltxinline|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
+
+\subsection{...use \texttt{xymatrix}}
+Unfortunately, \verb|xypic| (thus \verb|xymatrix|) are not supported by \LaTeXML{}. The best solution is to switch to \verb|tikz-cd|, which is fairly similar and produces considerably better images. Still, you may not include \verb|tikz-cd| images inside mathematical environments, such as between \ltxinline|\[...\]| or \ltxinline|\begin{equation}...\end{equation}|.
 
 \begin{exa}
   This is a mock table exercising a few aspects of \LaTeX{} tables, including borders, as well as \verb|tabularx| support.
