@@ -265,6 +265,9 @@ Tables generally work fine, although Mart\'in managed to trigger some interestin
 
   For accessibility, it is good practice to add hints about table headers. The \verb|latexml| provides a few commands like \ltxinline|\lxBeginTableHead{}| to mark rows or particular cells as table headers. This will improve the look of the \HTML{} table as well as improve its accessibility. The best way to understand these commands is to read the comments inside \verb|latexml.sty|.
 
+\subsection{...use \texttt{xymatrix}}
+Unfortunately, \verb|xypic| (thus \verb|xymatrix|) are not supported by \LaTeXML{}. The best solution is to switch to \verb|tikz-cd|, which is fairly similar and produces considerably better images. Still, you may not include \verb|tikz-cd| images inside mathematical environments, such as between \ltxinline|\[...\]| or \ltxinline|\begin{equation}...\end{equation}|.
+
 \begin{exa}
   This is a mock table exercising a few aspects of \LaTeX{} tables, including borders, as well as \verb|tabularx| support.
   Code:
