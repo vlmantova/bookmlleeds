@@ -48,7 +48,8 @@
 
 \title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
-\date{24 September 2020}
+
+\date{11 January 2021}
 
 \begin{document}
 
@@ -63,6 +64,13 @@
 \end{abstract}
 
 \subsection*{Changes}
+\subsubsection*{2021/01/11}
+\begin{itemize}
+  \item \verb|latexmlleeds|: improve the mobile experience in presence of content (such as images) larger than the device screen. Previously, the browser would shrink the entire page to make the images fit, now it will show the page at 100\% zoom and allow horizontal scrolling for the overflowing content.
+  \item \verb|latexmlleeds|: invisible TikZ improvements.
+  \item \verb|docs|: since \LaTeXML{} v0.8.5, \textbf{use} \verb|--pmml| before \verb|--mathtex| when invoking \verb|latexmlpost|.
+  \item \verb|docs|: support for \LaTeXML{} v0.8.4 will eventually be dropped. Please upgrade to v0.8.5 as soon as you can.
+\end{itemize}
 \subsubsection*{2020/09/24}
 \begin{itemize}
   \item \verb|css|: fix a problem with nested ordered lists not making any sense (sorry!).
@@ -97,7 +105,7 @@
 
 \section{Quick guide to \texorpdfstring{\LaTeXML{}}{LaTeXML} and \texttt{latexmlleeds}}
 \begin{enumerate}
-  \item If you can, update your \LaTeXML{} to v0.8.4. Rumour is that v0.8.5 will be released ``this month''. Previous versions (0.8.2, 0.8.3) will generally work, but they support fewer packages, and the output will look a bit worse. This guide is only tested with version 0.8.4.
+  \item If you can, update your \LaTeXML{} to v0.8.5. This guide is only tested with v0.8.4 and v0.8.5, and in the long run it may stop working with v0.8.4.
   \item Copy \textbf{all} the files below next to the \verb|.tex| source.
   \begin{enumerate}
     \item \verb|latexmlleeds.sty|
@@ -133,7 +141,7 @@ latexml --destination=myfile.xml myfile.tex
   \item Once everything is good, you can conclude with
   \begin{lstlisting}[language=bash]
 # to create the final HTML...
-latexmlpost --mathtex --svg \
+latexmlpost --pmml --mathtex --svg \
   --destination=mynotes/myfile.html myfile.xml
 # ...and zip it for upload on Minerva
 zip -r mynotes.zip mynotes
@@ -318,7 +326,7 @@ latexmlc --mathtex --svg \
 \end{lstlisting}
 \begin{lstlisting}[language=bash,caption={Generate the HTML in two steps}]
 latexml --destination=LaTeXML-Leeds.xml LaTeXML-Leeds.tex
-latexmlpost --mathtex --svg \
+latexmlpost --pmml --mathtex --svg \
   --destination=latexmlleeds/LaTeXML-Leeds.html \
   LaTeXML-Leeds.xml
 \end{lstlisting}

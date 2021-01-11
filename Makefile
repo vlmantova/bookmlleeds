@@ -26,7 +26,7 @@ latexmlleeds.zip: latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexm
 	zip -r "$@" latexmlleeds
 
 latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css LaTeXML-html5.xsl | latexmlleeds
-	latexmlpost --mathtex --svg --destination="$@" "$<"
+	latexmlpost --pmml --mathtex --svg --destination="$@" "$<"
 
 latexmlleeds/%.epub: %.tex latexmlleeds.css $(XML_DEPS)
 	latexmlc --splitat=chapter --svg --destination="$@" "$<"

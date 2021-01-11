@@ -14,7 +14,7 @@
   <!-- attach modern and mobile friendly tags to <head> -->
   <xsl:template match="/" mode="head-begin">
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   </xsl:template>
 
   <!-- include the latest version of MathJax 3 -->

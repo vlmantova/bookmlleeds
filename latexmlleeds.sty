@@ -129,6 +129,11 @@
   % https://tex.stackexchange.com/questions/171931/are-the-tikz-libraries-cd-and-external-incompatible-with-one-another
   \RequirePackage{environ}
 
+  % environ uses \@checkend, which is not implemented by LaTeXML
+  % below is a copy from latex.ltx
+  \def\@checkend#1{\def\reserved@a{#1}\ifx
+        \reserved@a\@currenvir \else\@badend{#1}\fi}
+
   % replace & with an active character
   % Q: will this have side effect?
   \def\LDS@ampersand{&} \catcode`&=\active \let&=\LDS@ampersand
@@ -137,8 +142,6 @@
     \RenewEnviron{tikzcd}{\LDS@includetikzexternalized}
   \else
     \RequirePackage{etoolbox}
-
-    \usetikzlibrary{cd}
 
     % save tikzcd original environment
     \let\LDS@tikzcd\tikzcd
