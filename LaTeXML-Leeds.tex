@@ -49,7 +49,7 @@
 \title{LaTeXML, with some tweaks}
 \author{Vincenzo Mantova}
 
-\date{11 January 2021}
+\date{13 January 2021}
 
 \begin{document}
 
@@ -63,42 +63,18 @@
   The \verb|latexmlleeds| additions are a bunch of files that will make your output a bit more accessible and, above all, mobile friendly. Moreover, you can use the additions to get direct access to the \HTML{} output and, for instance, embed Stream or Mediasite videos right into the lecture notes.
 \end{abstract}
 
-\subsection*{Changes}
+\subsection*{Recent changes}
+\subsubsection*{2021/01/13}
+\begin{itemize}
+  \item \verb|docs|: you \textbf{must use} \ltxinline|\usepackage[nocomments]{latexml}| (i.e., add the option \verb|nocomments|) if you want to use the \verb|tikzextern| option of \verb|latexmlleeds|. \verb|tikzextern| is very likely to fail if you do not. The guide has been updated accordingly.
+  \item \verb|docs|: changes moved to the end of the document.
+\end{itemize}
 \subsubsection*{2021/01/11}
 \begin{itemize}
   \item \verb|latexmlleeds|: improve the mobile experience in presence of content (such as images) larger than the device screen. Previously, the browser would shrink the entire page to make the images fit, now it will show the page at 100\% zoom and allow horizontal scrolling for the overflowing content.
   \item \verb|latexmlleeds|: invisible TikZ improvements.
   \item \verb|docs|: since \LaTeXML{} v0.8.5, \textbf{use} \verb|--pmml| before \verb|--mathtex| when invoking \verb|latexmlpost|.
   \item \verb|docs|: support for \LaTeXML{} v0.8.4 will eventually be dropped. Please upgrade to v0.8.5 as soon as you can.
-\end{itemize}
-\subsubsection*{2020/09/24}
-\begin{itemize}
-  \item \verb|css|: fix a problem with nested ordered lists not making any sense (sorry!).
-  \item \verb|docs|: clarify that \verb|tikzpicture| and \verb|tikzcd| are not supported in mathematical mode.
-  \item \verb|docs|: explain that \verb|xymatrix| is not supported.
-\end{itemize}
-\subsubsection*{2020/09/17}
-\begin{itemize}
-  \item \verb|latexmlleeds|: scale TikZ images properly regardless of the availability of ImageMagick. The behaviour can be tuned with the option \verb|tikzscale=factor|.
-  \item \verb|latexmlleeds|: implement an additional TikZ workaround for \verb|tikz-cd| that can be enabled by passing the option \verb|tikzcd|.
-  \item \verb|latexmlleeds|: the TikZ workaround is more robust and it requires even fewer changes (you do not need to import \verb|graphicx| or \verb|external| explicitly any more).
-\end{itemize}
-\subsubsection*{2020/09/07+\texorpdfstring{$\varepsilon$}{ɛ}}
-\begin{itemize}
-  \item \verb|latexmlleeds|: make TikZ workaround implementation compatible with the previous approach, so that the old code and the new can coexist without changes.
-\end{itemize}
-\subsubsection*{2020/09/07}
-\begin{itemize}
-  \item \verb|latexmlleeds|: rename \ltxinline|\lxHTML| to \ltxinline|\ldsHTML| to distinguish \verb|latexml| commands from the Leeds additions; \ltxinline|\lxHTML| is retained for backward compatibility.
-  \item \verb|latexmlleeds|: the additional \CSS{}, the custom \XSLT{}, and MathJax are now loaded automatically, simplifying considerably the calls to \verb|latexml| and \verb|latexmlpost| (in particular: \verb|latexmlleeds-html5.xsl| has been renamed \verb|LaTeXML-html5.xsl|, so delete the old file after downloading the new one). \textbf{Warning:} you must stop using the \verb|--stylesheet|, \verb|--css| and \verb|--javascript| options from the pre-2020/09/07 instructions, unless it is for your own customizations.
-  \item \verb|latexmlleeds|: fully integrate the TikZ workaround with the package options \verb|tikzextern| and \verb|tikz2svg|.
-  \item \verb|docs|: improve syntax colouring of \LaTeX{} snippets (accidentally revealing a bug in the \LaTeXML{} binding for the package \verb|listings|).
-  \item \verb|docs|: explain how to deal with unsupported packages in a more sophisticated way, short of writing your our \LaTeXML{} binding.
-  \item \verb|docs|: improve the video embedding example using the code provided by Microsoft when asking for a `responsive' embedded video.
-\end{itemize}
-\subsubsection*{2020/08/26}
-\begin{itemize}
-  \item Initial release.
 \end{itemize}
 
 \tableofcontents
@@ -119,7 +95,8 @@
   \begin{lstlisting}[style=latexml]
 % for \iflatexml and other goodies
 % can be loaded whenever needed
-\usepackage{latexml}
+% nocomments is recommended for TikZ users
+\usepackage[nocomments]{latexml}
 
 % to improve the HTML style, \ldsHTML and other goodies
 % load *after* loading all the other packages
@@ -198,14 +175,22 @@ Note that \verb|latexmlleeds| does not support using \verb|tikzpicture| and \ver
 The easy way to proceed is the following (read \autoref{ssub:TikZ} for some technical details).
 \begin{enumerate}
   \item Install \verb|pdf2svg|.
+  \item Make sure to add the nocomments option to \verb|latexml|.
+  \begin{lstlisting}[style=latexml]
+\usepackage[nocomments]{latexml}
+  \end{lstlisting}
   \item In the preamble, gate \ltxinline|\usepackage{tikz}| and any other TikZ-related command in the preamble behind \ltxinline|\iflatexml|.
-      \begin{lstlisting}[style=latexml]
+  \begin{lstlisting}[style=latexml]
+% make sure to add the nocomments option to latexml
+\usepackage[nocomments]{latexml}
+
 \iflatexml
 \else
   \usepackage{tikz} % LaTeXML must *not* see this
   % any other TikZ-related command should go here
+  \usetikzlibrary{arrows}
 \fi
-      \end{lstlisting}
+  \end{lstlisting}
   \item  Import \ltxinline|latexmlleeds| with the options \ltxinline|tikzextern|, \ltxinline|tikz2svg|, and optionally \ltxinline|tikzcd|.
   \begin{lstlisting}[style=latexml]
 % for most users
@@ -461,9 +446,9 @@ Some notes:
 \label{ssub:TikZ}
 If your TikZ figures are crashing \LaTeXML{}, importing \verb|latexmlleeds| with the following options will hide your TikZ figures from \LaTeXML{}, while it will make \verb|pdflatex| output the images in the \verb|images| subfolder in PDF and SVG format. You will need to manually hide \ltxinline|\usepackage{tikz}| from \LaTeXML{} using \ltxinline|\iflatexml| and ensure that you call \ltxinline|\usetikzlibrary{external}|. See \autoref{sub:tikz-howto}, or the source of this file, for an example.
 \begin{description}
-  \item[\texttt{tikzextern}] When compiling to PDF, make TikZ export all TikZ pictures as images named \verb|images/TikZ-#.pdf| (where \verb|#| is a number); when compiling with \LaTeXML{}, replace all TikZ pictures with the corresponding images in \verb|images/TikZ-#.pdf|. \textbf{You need to pass the option \texttt{-shell-escape} to \texttt{pdflatex} for this to work.}
+  \item[\texttt{tikzextern}] When compiling to PDF, make TikZ export all TikZ pictures as images named \verb|images/TikZ-#.pdf| (where \verb|#| is a number); when compiling with \LaTeXML{}, replace all TikZ pictures with the corresponding images in \verb|images/TikZ-#.pdf|. For this to work, \textbf{must do the following}: pass the option \verb|nocomments| to the \verb|latexml| package, and add the command-line option \verb|-shell-escape| to \verb|pdflatex|.
   \item[\texttt{tikzextern=prefix}] Same as above, but replaces \verb|images/TikZ-| with \verb|prefix|.
-  \item[\texttt{tikz2svg}] When compiling to PDF, also create an SVG version of the images by running command \verb|pdf2svg images/TikZ-#.pdf images/TikZ-#.svg| (or \verb|pdf2svg prefix#.pdf images/prefix#.svg|). \textbf{You need to install \texttt{pdf2svg} for this to work.}
+  \item[\texttt{tikz2svg}] When compiling to PDF, also create an SVG version of the images by running command \verb|pdf2svg images/TikZ-#.pdf images/TikZ-#.svg| (or \verb|pdf2svg prefix#.pdf prefix#.svg|). \textbf{You need to install \texttt{pdf2svg} for this to work.}
   \item[\texttt{tikz2svg=command}] Same as above, but run \verb|command| instead of \verb|pdf2svg|.
   \item[\texttt{tikzscale=factor}] When converting to SVG, scale the output for the web by \verb|factor|. The default setting if you do not pass \verb|tikzscale| is \verb|1.333| (since PDF content uses 72 points per inch, while web content uses 96 points per inch).
   \item[\texttt{tikzcd}] Enable an additional workaround for the \verb|tikz-cd| library, which is not compatible with \verb|tikzextern| out of the box.
@@ -493,6 +478,8 @@ This is where you can tweak the appearance of your \HTML{} files. For now, the b
 \end{itemize}
 This styling has only been tested with the \verb|article| class and on Edge and Chrome, so further tweaks may be needed.
 
+\appendix
+
 \section{Good practices}
 \begin{itemize}
   \item Follow Martin's recommendations about fonts, tables, margins, and so on.
@@ -508,6 +495,38 @@ This styling has only been tested with the \verb|article| class and on Edge and 
   \item List of \LaTeX{} commands \href{http://docs.mathjax.org/en/v2.7-latest/tex.html#supported-latex-commands}{supported by MathJax v2.7}
   \item \href{http://docs.mathjax.org/en/v3.1-latest/}{MathJax v3.1} documentation
   \item List of \LaTeX{} commands \href{http://docs.mathjax.org/en/v3.1-latest/input/tex/macros/index.html}{supported by MathJax v3.1}
+\end{itemize}
+
+\section{Past changes}
+
+\subsubsection*{2020/09/24}
+\begin{itemize}
+  \item \verb|css|: fix a problem with nested ordered lists not making any sense (sorry!).
+  \item \verb|docs|: clarify that \verb|tikzpicture| and \verb|tikzcd| are not supported in mathematical mode.
+  \item \verb|docs|: explain that \verb|xymatrix| is not supported.
+\end{itemize}
+\subsubsection*{2020/09/17}
+\begin{itemize}
+  \item \verb|latexmlleeds|: scale TikZ images properly regardless of the availability of ImageMagick. The behaviour can be tuned with the option \verb|tikzscale=factor|.
+  \item \verb|latexmlleeds|: implement an additional TikZ workaround for \verb|tikz-cd| that can be enabled by passing the option \verb|tikzcd|.
+  \item \verb|latexmlleeds|: the TikZ workaround is more robust and it requires even fewer changes (you do not need to import \verb|graphicx| or \verb|external| explicitly any more).
+\end{itemize}
+\subsubsection*{2020/09/07+\texorpdfstring{$\varepsilon$}{ɛ}}
+\begin{itemize}
+  \item \verb|latexmlleeds|: make TikZ workaround implementation compatible with the previous approach, so that the old code and the new can coexist without changes.
+\end{itemize}
+\subsubsection*{2020/09/07}
+\begin{itemize}
+  \item \verb|latexmlleeds|: rename \ltxinline|\lxHTML| to \ltxinline|\ldsHTML| to distinguish \verb|latexml| commands from the Leeds additions; \ltxinline|\lxHTML| is retained for backward compatibility.
+  \item \verb|latexmlleeds|: the additional \CSS{}, the custom \XSLT{}, and MathJax are now loaded automatically, simplifying considerably the calls to \verb|latexml| and \verb|latexmlpost| (in particular: \verb|latexmlleeds-html5.xsl| has been renamed \verb|LaTeXML-html5.xsl|, so delete the old file after downloading the new one). \textbf{Warning:} you must stop using the \verb|--stylesheet|, \verb|--css| and \verb|--javascript| options from the pre-2020/09/07 instructions, unless it is for your own customizations.
+  \item \verb|latexmlleeds|: fully integrate the TikZ workaround with the package options \verb|tikzextern| and \verb|tikz2svg|.
+  \item \verb|docs|: improve syntax colouring of \LaTeX{} snippets (accidentally revealing a bug in the \LaTeXML{} binding for the package \verb|listings|).
+  \item \verb|docs|: explain how to deal with unsupported packages in a more sophisticated way, short of writing your our \LaTeXML{} binding.
+  \item \verb|docs|: improve the video embedding example using the code provided by Microsoft when asking for a `responsive' embedded video.
+\end{itemize}
+\subsubsection*{2020/08/26}
+\begin{itemize}
+  \item Initial release.
 \end{itemize}
 
 \end{document}
