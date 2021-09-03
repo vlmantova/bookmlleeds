@@ -1,0 +1,10 @@
+/* Set font to sans serif */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* Remove indentation on paragraphs */
+.ltx_title_abstract + .ltx_p,
+.ltx_para > .ltx_p:first-child {
+  text-indent: 0em !important;
+}

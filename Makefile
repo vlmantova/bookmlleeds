@@ -2,43 +2,37 @@
 
 .PRECIOUS: %.xml %.pdf
 
-TARGETS=latexmlleeds.zip latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf LaTeXML-Leeds.xml LaTeXML-Leeds.pdf
-
-XML_DEPS=latexmlleeds.sty latexmlleeds.sty.ltxml
-
-IMG_DEPS=LaTeXML-Leeds.pdf
+TARGETS=latexmlleeds.zip latexmlleeds/index.html LaTeXML-Leeds.epub LaTeXML-Leeds.pdf LaTeXML-Leeds.xml LaTeXML-Leeds.pdf latexmlleeds/bmluser.zip
 
 all: $(TARGETS)
 
 clean:
 	-rm -f $(TARGETS)
-	-rm -fr images latexmlleeds
-	-rm -f $(addprefix LaTeXML-Leeds.,aux auxlock fdb_latexmk fls log out synctex.gz toc)
+	-rm -fr bmlimages latexmlleeds
+	-latexmk -C LaTeXML-Leeds.tex
 
-images:
-	mkdir "$@"
-
-latexmlleeds:
-	mkdir "$@"
-
-latexmlleeds.zip: latexmlleeds/index.html latexmlleeds/LaTeXML-Leeds.epub latexmlleeds/LaTeXML-Leeds.pdf
+latexmlleeds.zip: latexmlleeds/index.html latexmlleeds/index.plain.html latexmlleeds/bmluser.zip
 	-rm -f "$@"
-	zip -r "$@" latexmlleeds
+	zip -r "$@" $< latexmlleeds
 
-latexmlleeds/index.html: LaTeXML-Leeds.xml latexmlleeds.css LaTeXML-html5.xsl | latexmlleeds
-	latexmlpost --pmml --mathtex --svg --destination="$@" "$<"
+latexmlleeds/bmluser.zip: bmluser/latexmlleeds.css bmluser/latexmlleeds.plain.css
+	-rm -f "$@"
+	zip -r "$@" $<
 
-latexmlleeds/%.epub: %.tex latexmlleeds.css $(XML_DEPS)
-	latexmlc --splitat=chapter --svg --destination="$@" "$<"
+latexmlleeds/index.html: LaTeXML-Leeds.xml LaTeXML-Leeds.pdf LaTeXML-Leeds.epub
+	$(LML_PREFIX)latexmlpost --pmml --mathtex --destination="$@" --navigationtoc=context --splitat=section --timestamp=0 "$<"
 
-%.pdf: %.tex latexmlleeds.sty | images
-	latexmk -latexoption="-interaction=nonstopmode -halt-on-error -shell-escape" -pdf "$<"
+latexmlleeds/index.plain.html: LaTeXML-Leeds.plain.xml LaTeXML-Leeds.pdf LaTeXML-Leeds.epub
+	$(LML_PREFIX)latexmlpost --pmml --mathtex --destination="$@" --timestamp=0 "$<"
 
-%.dvi: %.tex latexmlleeds.sty | images
-	latexmk -latexoption="-interaction=nonstopmode -halt-on-error -shell-escape" "$<"
+%.epub: %.tex
+	$(LML_PREFIX)latexmlc --preload=[style=plain]bookml/bookml --splitat=section --destination="$@" --timestamp=0 "$<"
 
-latexmlleeds/%.pdf: %.pdf
-	cp "$<" "$@"
+%.pdf: %.tex
+	latexmk -interaction=nonstopmode -halt-on-error -pdf "$<"
 
-%.xml: %.tex $(XML_DEPS) $(IMG_DEPS)
-	latexml --destination="$@" "$<"
+%.xml: %.tex
+	$(LML_PREFIX)latexml --destination="$@" "$<"
+
+%.plain.xml: %.tex
+	$(LML_PREFIX)latexml --preload=[style=plain]bookml/bookml --destination="$@" "$<"

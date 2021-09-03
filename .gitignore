@@ -1,9 +1,8 @@
 ## Build
-images
-LaTeXML.css
-ltx-article.css
-ltx-listings.css
+bmlimages
 *.xml
+*.pdf
+*.epub
 latexmlleeds
 latexmlleeds.zip
 
