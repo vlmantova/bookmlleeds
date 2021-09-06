@@ -6,6 +6,20 @@
 \bmlImageEnvironment{tikzcd}
 \let\ldsHTML\bmlRawHTML
 
+\bmlHTMLEnvironment{details}
+\bmlHTMLInlineEnvironment{summary}
+
+\newenvironment{foldeddesc}
+{\iflatexml%
+  \bgroup\def\closedetails{}%
+  \renewcommand{\item}[1][]{\closedetails\begin{h:details}%
+  \begin{h:summary}\textbf{##1}\end{h:summary}%
+  \def\closedetails{\end{h:details}}}
+\else\begin{description}\fi}
+{\iflatexml%
+  \closedetails\egroup%
+  \else\end{description}\fi}
+
 \usepackage[pdfusetitle,colorlinks]{hyperref}
 \usepackage[dvipsnames]{xcolor}
 
@@ -52,7 +66,7 @@
 \title{LaTeXML + BookML guide}
 \author{Vincenzo Mantova}
 
-\date{3 September 2021}
+\date{6 September 2021}
 
 \begin{document}
 
@@ -65,12 +79,14 @@
 \end{abstract}
 
 \begin{center}
-  Formats: \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/}{HTML} (bookdown style), \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/index.plain.html}{HTML} (plain style), \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/LaTeXML-Leeds.epub}{EPUB}, \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/LaTeXML-Leeds.pdf}{PDF}.
+  Formats: \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/index.html}{HTML} (bookdown style), \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/index.plain.html}{HTML} (plain style), \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/LaTeXML-Leeds.epub}{EPUB}, \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/LaTeXML-Leeds.pdf}{PDF}.
 \end{center}
 
 \subsection*{Recent changes}
-\subsubsection*{2021/09/03}
-The \texttt{latexmlleeds} additions have now become a tiny addition to \href{https://vlmantova.github.io/bookml/}{BookML}, which is very similar, but a lot better, faster, and easier to use. If you already use \texttt{latexmlleeds}, you can add a small compatibility layer to keep working (almost exactly) as before: see \autoref{sub:comp-latexmlleeds}.
+\begin{description}
+  \item[2021/09/06] Demonstrate foldable environments using the latest BookML update.
+  \item[2021/09/03] The \texttt{latexmlleeds} additions have now become a tiny addition to \href{https://vlmantova.github.io/bookml/}{BookML}, which is very similar, but a lot better, faster, and easier to use. If you already use \texttt{latexmlleeds}, you can add a small compatibility layer to keep working (almost exactly) as before: see \autoref{sub:comp-latexmlleeds}.
+  \end{description}
 
 \tableofcontents
 
@@ -83,34 +99,41 @@ Let me stress first: you must use \LaTeXML{} version 0.8.5 or newer. Check with
 \end{lstlisting}
 and upgrade if you see 0.8.4 or less. Version 0.8.6 should come out in September and I strongly recommend you keep an eye on it, because it contains many improvements (and it is a bit faster).
 
-\subsubsection*{Windows}
-\begin{itemize}
-  \item For University machines (including the Windows Virtual Desktop): use \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{AppsAnywhere} (for now, only when working online) or contact IT.
-  \item Install \href{https://strawberryperl.com/}{StrawberryPerl} (\texttt{64bit}) (available on AppsAnywhere).
-  \item In StrawberryPerl, run
-    \begin{lstlisting}
-cpanm --notest --verbose LaTeXML
-    \end{lstlisting}
-  \item Optional (for proper image handling): install \href{https://imagemagick.org/script/download.php}{ImageMagick} \texttt{x64-dll}, and if you have PDF or EPS pictures, add \href{https://www.ghostscript.com/download/gsdnld.html}{Ghostscript} 64 bit (both available on AppsAnywhere). Then run
-    \begin{lstlisting}
-cpanm --verbose Image::Magick
-    \end{lstlisting}
-  \item Optional (for BookML additional image functionality): ensure your \LaTeX{} installation comes with \texttt{latexmk}, \texttt{dvisvgm}, \texttt{preview.sty}.
-\end{itemize}
+\begin{h:details}
+  \begin{h:summary}\textbf{Windows}\end{h:summary}
+  \begin{itemize}
+    \item For University machines (including the Windows Virtual Desktop): use \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{AppsAnywhere} (for now, only when working online) or contact IT.
+    \item Install \href{https://strawberryperl.com/}{StrawberryPerl} (\texttt{64bit}) (available on AppsAnywhere).
+    \item In StrawberryPerl, run
+      \begin{lstlisting}
+  cpanm --notest --verbose LaTeXML
+      \end{lstlisting}
+    \item Optional (for proper image handling): install \href{https://imagemagick.org/script/download.php}{ImageMagick} \texttt{x64-dll}, and if you have PDF or EPS pictures, add \href{https://www.ghostscript.com/download/gsdnld.html}{Ghostscript} 64 bit (both available on AppsAnywhere). Then run
+      \begin{lstlisting}
+  cpanm --verbose Image::Magick
+      \end{lstlisting}
+    \item Optional (for BookML additional image functionality): ensure your \LaTeX{} installation comes with \texttt{latexmk}, \texttt{dvisvgm}, \texttt{preview.sty}.
+  \end{itemize}
+\end{h:details}
 
-\subsubsection*{macOS}
-MacPorts is the best option (\href{https://dlmf.nist.gov/LaTeXML/get.html}{instructions}). \href{https://nixos.wiki/wiki/Nixpkgs}{Nixpkgs} is very solid, if you know how to use it (the package is \texttt{perlPackages.LaTeXML}).
-
-You can also use \href{https://brew.sh/}{Homebrew} but you will miss some image functionality.
-
-Finally, you might be able to get a fully functional LaTeXML via:
-\begin{lstlisting}
+\begin{h:details}
+  \begin{h:summary}\textbf{macOS}\end{h:summary}
+  \begin{itemize}
+    \item \href{https://www.macports.org/}{MacPorts} is the best option: \href{https://dlmf.nist.gov/LaTeXML/get.html}{instructions}.
+    \item \href{https://nixos.wiki/wiki/Nixpkgs}{Nixpkgs} is very solid, if you know how to use it (the package is \texttt{perlPackages.LaTeXML}).
+    \item \href{https://brew.sh/}{Homebrew} but image handling will be restricted and potentially broken in some cases.
+    \item You \textbf{may} be able to get LaTeXML via:
+      \begin{lstlisting}
 cpan LaTeXML
-cpan Image::Magick 
-\end{lstlisting}
+      \end{lstlisting}
+      but again image functionality will be restricted and potentially broken in some cases.
+  \end{itemize}
+\end{h:details}
 
-\subsubsection*{Linux}
-Many distributions include the package \texttt{latexml}, \textbf{but it is often outdated}. Check if you can find \texttt{.deb} or \texttt{.rpm} files for versions 0.8.5, or soon 0.8.6, from more up-to-date distributions (e.g.\ Debian Unstable, Fedora).
+\begin{h:details}
+  \begin{h:summary}\textbf{Linux}\end{h:summary}
+  Many distributions include the package \texttt{latexml}, \textbf{but it is often outdated}. Check if you can find \texttt{.deb} or \texttt{.rpm} files for versions 0.8.5, or soon 0.8.6, from more up-to-date distributions (e.g.\ Debian Unstable, Fedora).
+\end{h:details}
 
 \subsection{BookML}
 Unpack BookML next to your \texttt{.tex} files as instructed in the \href{https://vlmantova.github.io/bookml/}{BookML manual}. Then add
@@ -128,7 +151,7 @@ If you have been using \texttt{latexmlleeds}, replace \ltxinline|\usepackage{lat
 \bmlImageEnvironment{tikzcd}      % if using tikzcd
 \let\ldsHTML\bmlRawHTML           % if using \ldsHTML
 \end{lstlisting}
-Moreover, put the \texttt{bmluser} folder from \href{bmluser-latexmlleeds.zip}{this file} next to your \texttt{.tex} files.
+Moreover, put the \texttt{bmluser} folder from \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/bmluser-latexmlleeds.zip}{this file} next to your \texttt{.tex} files.
 
 \ltxinline|tikzextern| users will like to know that BookML has a massively faster and fully automated way of generating images. No need for \ltxinline|-shell-escape|, \ltxinline|pdf2svg|, or other additional steps.
 
@@ -172,8 +195,12 @@ zip -r mynotes.zip mynotes
 
 After you have made \LaTeXML{} happy, you likely need to adjust the end result, or to fix some errors.
 
-\begin{description}
-  \item[Split large documents.] Add \verb|--splitat=| to \verb|latexmlpost| to split the output in various ways (part, chapter, section\dots{}). You \textbf{must} split long documents, or MathJax will take ages to render your formulas.
+\begin{foldeddesc}
+  \item[Alternative text for images (important!).] Add \ltxinline|\bmlDescription{text}| right after the image (do not leave an empty line between the image and the text). This will populate the \texttt{alt} attribute (or equivalent) and will be read by screen readers in place of the image.
+
+    Please keep in mind that sighted users may also benefit from the alternative text. If that is the case, consider using \ltxinline|\begin{figure}| and \ltxinline|\caption{}|, and possibly add a reference in the caption to more explanations (e.g.\ the definition, a proof, etc.).
+  \item[Table headers (may be important for accessibility).] You may need to explicitly mark some table rows as headers. This can be done with some appropriate commands provided by \LaTeXML{}. See \autoref{fig:table} for an example.
+  \item[Split into multiple pages.] Add \verb|--splitat=| to \verb|latexmlpost| to split the output in various ways (part, chapter, section\dots{}). You \textbf{must} split long documents, or MathJax will take ages to render your formulas.
   \item[Disable the bookdown style.] If you do not like the bookdown style and prefer a more plain page, like the old \texttt{latexmlleeds}, use
   \begin{lstlisting}[style=latexml]
 \usepackage[style=plain]{bookml/bookml}
@@ -181,9 +208,6 @@ After you have made \LaTeXML{} happy, you likely need to adjust the end result, 
   or pass \lstinline|--preload=[style=plain]bookml/bookml| when calling \texttt{latexml}. You may wish to remove \lstinline| --navigationtoc=context| (see below about sidebars).
   \item[Navigation sidebar.] This is already included in the bookdown style. If you disable it, though, but still want the sidbar, add \verb|--css=LaTeXML-navbar-left.css| to \verb|latexmlpost|.
   \item[Customise CSS (fonts, color).] Create the \texttt{bmluser} and add any CSS file to it.
-  \item[Alternative text for images.] Add \ltxinline|\bmlDescription{text}| right after the image (do not leave an empty line between the image and the text). This will populate the \texttt{alt} attribute (or equivalent) and will be read by screen readers in place of the image.
-
-    Please keep in mind that sighted users may also benefit from the alternative text. If that is the case, consider using \ltxinline|\begin{figure}| and \ltxinline|\caption{}|, and possibly add a reference in the caption to more explanations (e.g.\ the definition, a proof, etc.).
   \item[Many or complex \tikzname{} pictures] BookML has a facility to generate the images via \LaTeX{}, and bypassing \LaTeXML{}'s slow support for \tikzname{} altogether.
 
   Ensure that all of the \tikzname{} code is either in the preamble or between \ltxinline|\begin{tikzpicture}| and \ltxinline|\end{tikzpicture}|, then add the following to the preamble, after the bookml package:
@@ -201,10 +225,19 @@ After you have made \LaTeXML{} happy, you likely need to adjust the end result, 
   \item[Embed videos.] You can use \ltxinline|\bmlRawHTML{html}| to write arbitrary \HTML{}, in particular output the embedding code for Stream, Mediasite, YouTube, or any other platform. See \autoref{fig:embed-stream} below for some reusable code that will also make the video adapt to the size of the page.
   \item[Unsupported packages.] \LaTeXML{} supports only so many packages (\href{https://dlmf.nist.gov/LaTeXML/manual/included.bindings/}{full list}). If your package is not supported, or is not supported well, see \autoref{sub:unsupported-packages}.
   \item[Broken links in formulas.] You \textbf{cannot} use anything other than text in \ltxinline|\mbox{},\text{}| when inside an equation. This is a limitation of MathJax. Long-term, BookML will automatically strip non-text content but for now you have to do it yourself (for instance, remove references or replace \ltxinline|\ref| with \ltxinline|\ref*| where applicable).
-  \item[Table headers.] You may need to explicitly mark some table rows as headers. This can be done with some appropriate commands provided by \LaTeXML{}. See \autoref{fig:table} for an example.
   \item[Embed \TeX{} code as annotation.] I recommend including the \TeX{} code in your mathematical formulas. It can be accessed by right-clicking on the formulas. Use \ltxinline|--pmml --mathtex| when calling \ltxinline|latexmlpost| to do that.
+  \item[Foldable environments.] If you want to hide a proof, a solution, or some additional details, you can use the following:
+    \begin{lstlisting}[style=latexml]
+\bmlHTMLEnvironment{details}
+\bmlHTMLInlineEnvironment{summary}
+\begin{h:details}
+  \begin{h:summary}\textbf{Solution.}\end{h:summary}
+  ...details of the solutions...
+\end{h:details}
+    \end{lstlisting}
+    If you like the styling used here, just drop the \href{https://minerva.leeds.ac.uk/bbcswebdav/courses/201920_MAPS_MM8863/latexmlleeds/bmluser/latexmlleeds-details.css}{latexmlleeds-details.css} file into the \texttt{bmluser} folder.
   \item[Other options.] Visit the \href{https://dlmf.nist.gov/LaTeXML/docs.html}{\LaTeXML{} documentation} or run \verb|latexml --help|, \verb|latexmlpost --help|, \verb|latexmlc --help|.
-\end{description}
+\end{foldeddesc}
 
 \subsection{Unsupported packages}
 \label{sub:unsupported-packages}
@@ -224,6 +257,9 @@ InputDefinitions('package', type => 'sty', noltxml => 1);
 \end{itemize}
 
 If none of the easy solutions work, you may need a new `binding' for the package, and that is not an easy task.
+
+\clearpage
+\subsection{Examples}
 
 \begin{figure}
   \begin{center}
