@@ -68,7 +68,7 @@
 \title{LaTeXML + BookML guide}
 \author{Vincenzo Mantova}
 
-\date{20 December 2022}
+\date{21 December 2022}
 
 \begin{document}
 
@@ -95,6 +95,10 @@
 
 \subsection*{Recent changes}
 \begin{description}
+  \item[2022/12/21]
+    \begin{itemize}
+      \item \LaTeXML{} installed via AppsAnywhere now works offline on University laptops.
+    \end{itemize}
   \item[2022/12/20]
     \begin{itemize}
       \item Update to BookML 2022/12/16.
@@ -170,8 +174,8 @@ module load latexml
     \begin{lstlisting}
 module use /apps/linsw1/modulefiles/7/
     \end{lstlisting}
-  \item[Windows (AppsAnywhere -- easiest, but requires constant connection)]
-    By far the easiest way to install LaTeXML, but it will only work when connected to the internet. It also work in the Windows Virtual Desktop (very slowly!).
+  \item[Windows (AppsAnywhere -- easiest, now works offline too)]
+    By far the easiest way to install LaTeXML on University computers. It also work in the Windows Virtual Desktop (very slowly!).
     \begin{itemize}
       \item Make sure to have \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{AppsAnywhere} installed.
       \item Install Ghostscript, ImageMagick, StrawberryPerl.
@@ -181,6 +185,7 @@ cpanm --verbose Image::Magick
 cpanm --notest --verbose LaTeXML
         \end{lstlisting}
     \end{itemize}
+    \textbf{Note:} if you installed the above apps before 21\textsuperscript{st} December 2022, you have to remove them from Cloudpaging Player and install them again to have them work without an internet connection.
   \item[Windows (with admin rights)]
     You can now get admin access on University laptops: simply right-click on the installer you want and use ``Request Run as Administrator''.
   \begin{itemize}
@@ -281,7 +286,7 @@ latexmlpost --navigationtoc=context --urlstyle=file \
 zip -r myfile.zip myfile
     \end{lstlisting}
   \item You may now upload the zip file on Minerva. Make sure to overwrite the existing files with the same name. Reach out to Chris Tedd if the security features of Minerva destroy your notes.
-  \item \textbf{New style:} Once you are comfortable that everything works, you can simply run \lstinline|make| (or \lstinline|gmake|) to regenerate all zip files for all the main \texttt{.tex} documents in the folder. Only the files that have been modified will be updated (moreover, the system should be smart enough to notice if you have modified included files).
+  \item \textbf{New style:} Once you are comfortable that everything works, you can simply run \lstinline|make| (or \lstinline|gmake|) to regenerate all zip files for all the main \texttt{.tex} documents in the folder. Only the files that have been modified will be updated (moreover, the system should be smart enough to notice if you have modified \lstinline|\include|'d files).
 \end{enumerate}
 
 \subsection{Adjust and fix}
