@@ -21,6 +21,14 @@
 .ltx_page_main {
   padding: min(1em, 1.5%) min(3em, 4.5%) min(1em, 1.5%) min(2em, 3%); }
 
+/* Fix run-in followed by several paragraphs (backported from 0.8.8) */
+.ltx_runin + .ltx_para p,
+.ltx_runin + p {
+  display: block; }
+  .ltx_runin + .ltx_para p:first-child,
+  .ltx_runin + p:first-child {
+    display: inline; }
+
 /* prevent invisible assistive MathML from enlarging the container */
 mjx-assistive-mml {
   right: 0 !important;
