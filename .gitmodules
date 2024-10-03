@@ -1,3 +1,6 @@
 [submodule "bookml"]
 	path = bookml
 	url = https://github.com/vlmantova/bookml.git
+[submodule "bookmlleeds"]
+	path = bookmlleeds
+	url = git@github.com:vlmantova/bookmlleeds.git

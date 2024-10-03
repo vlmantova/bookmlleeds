@@ -1,10 +1,12 @@
 ## Build
+auxdir
+backups
 bmlimages
+bookmlleeds
 *.xml
 *.pdf
 *.epub
-latexmlleeds
-latexmlleeds.zip
+*.zip
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
