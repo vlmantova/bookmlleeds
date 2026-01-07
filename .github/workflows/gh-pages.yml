@@ -11,7 +11,6 @@ jobs:
           release: false
           upload-aux-directory: false
           replace-bookml: true
-          scheme: medium
       - name: Create tarball
         run: |
           tar -cvf "$RUNNER_TEMP"/bookmlleeds.tar.gz -C "$RUNNER_TEMP"/auxdir/html/bookmlleeds --exclude=./LaTeXML.cache .
