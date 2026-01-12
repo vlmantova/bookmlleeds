@@ -132,6 +132,50 @@ The packages \texttt{latexmk}, \texttt{preview.sty}, \texttt{dvisvgm} and \textt
 
 For the rest of the software, follow the instructions below.
 
+\begin{foldedframe}[Overleaf]
+  \begin{itemize}
+    \item \textbf{First time only.} Open your Overleaf \href{https://www.overleaf.com/user/settings}{account settings} and \href{https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization#linking-your-overleaf-account-to-your-github-account}{link your GitHub account} from the `GitHub Sync' entry.
+    \item Open an existing or new Overleaf project and start \href{https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization#creating-a-new-github-repository-from-an-overleaf-project}{synchronizing it with a new GitHub repository}. The process is smoother when \textbf{the project name has no spaces}. \textbf{Note:} I recommend you immediately visit the new repository and click the `Watch' icon (next to `Edit Pins', `Fork', `Star').
+    \item Finally, add the file \texttt{.github/workflows/bookml.yaml} to the project with the following content:
+      \begin{lstlisting}[style=yaml,name=bookml.yaml]
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Compile with BookML
+        uses: vlmantova/bookml-action@v1
+      \end{lstlisting}
+      Now synchronize the project with GitHub. \textbf{First time only:} GitHub will ask you to grant permissions to Overleaf to run workflows. Say yes!
+    \item GitHub should start compiling all \texttt{.tex} files at the top folder of your Overleaf project that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
+    \item If you `watched' the repository as recommended in the previous steps, you should receive an email in 2-3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
+    \item Every time you want to compile a new version of your Overleaf project, just push the new changes to GitHub.
+  \end{itemize}
+\end{foldedframe}
+
+\begin{foldedframe}[GitHub]
+  \begin{itemize}
+    \item Simply add the file \texttt{.github/workflows/bookml.yaml} to your repositories with the following content:
+      \begin{lstlisting}[style=yaml,name=bookml.yaml]
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Compile with BookML
+        uses: vlmantova/bookml-action@v1
+      \end{lstlisting}
+      I also recommend that you watch the repository (this is usually automatic when you create a repository; see the `Watch' icon on the repository page, next to `Edit Pins', `Fork', `Star').
+    \item GitHub should start compiling all \texttt{.tex} files at the top folder of your repository that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
+    \item If you are watching the repository as recommended in the previous steps, you should receive an email in 2-3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
+    \item Every push will start a new compile. If you push frequently, consider tweaking the action to run only when pushing to \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs}{specific branches} or \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-of-specific-tags-occurs}{tags}.
+  \end{itemize}
+\end{foldedframe}
+
 \begin{foldedframe}[macOS (MacPorts)]
   \begin{itemize}
     \item Open the Terminal app.
@@ -167,11 +211,11 @@ sudo port upgrade outdated
   \end{itemize}
 \end{foldedframe}
 
-\begin{foldedframe}[macOS (Homebrew) -- PARTLY BROKEN]
+\begin{foldedframe}[macOS (Homebrew) -- AVOID PLEASE]
   The Homebrew version has intrinsic packaging issues and \textbf{should be avoided}. However, if you really insist:
   \begin{lstlisting}
 brew install latexml make
-    \end{lstlisting}
+  \end{lstlisting}
   Functionality related to images will likely be broken.
 \end{foldedframe}
 
