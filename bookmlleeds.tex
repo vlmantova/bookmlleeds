@@ -122,7 +122,7 @@ This is a short manual on how to install and run BookML at the University of Lee
   \begin{itemize}
     \item \LaTeXML{} (minimum 0.8.7, recommended 0.8.8 or later)
     \item Any image handling: the Perl module \texttt{Image::Magick}
-    \item Support for EPS, PDF images: Ghostscript and possibly mutool
+    \item Support for converting EPS, PDF images to SVG: Ghostscript, \texttt{dvisvgm} for EPS; \texttt{mutool} for PDF (you can also configure BookML to use \texttt{dvisvgm} instead of \texttt{mutool}, but it is less reliable)
     \item BookML images: Ghostscript, \texttt{latexmk}, \texttt{preview.sty}, \texttt{dvisvgm} (minimum 1.6, recommended 2.7 or later)
     \item Automatic PDF, \HTML, and zip creation: GNU Make, \texttt{latexmk}, \texttt{zip}, optionally \texttt{texfot}
   \end{itemize}
@@ -185,14 +185,19 @@ jobs:
           \begin{lstlisting}
 sudo port install gmake LaTeXML +mactex
         \end{lstlisting}
-        For the Ghostscript prerequisites, depending on your specific version of Mac\TeX{}, you may need to install the \href{https://tug.org/mactex/morepackages.html}{Ghostscript-Extras package}.
+        For the Ghostscript and mutool prerequisites, depending on your specific version of Mac\TeX{}, you may need to install the \href{https://tug.org/mactex/morepackages.html}{Ghostscript-Extras package}.
 
-          Otherwise
-          \begin{lstlisting}[language=bash]
+        Otherwise
+        \begin{lstlisting}[language=bash]
 sudo port install gmake LaTeXML
         \end{lstlisting}
 
       For the remaining prerequisites (such as \texttt{dvisvgm}), add them as you would add any other \TeX{} Live package (for instance using the \TeX{} Live Utility).
+
+      Ghoscript-Extras will include mutool, but if it is still not available on your system and you use PDF images, run
+      \begin{lstlisting}[language=bash]
+sudo port install mupdf
+      \end{lstlisting}
     \item If, \textbf{and only if}, your \LaTeX{} was installed via MacPorts, you can add the optional packages via:
           \begin{lstlisting}[language=bash]
 # for automatic PDF, html, zip creation
@@ -201,6 +206,8 @@ sudo port install dvisvgm latexmk
 sudo port install texlive-latex-extra
 # for texfot (to reduce latex output during PDF creation)
 sudo port install texlive-bin-extra
+# for PDF to SVG conversion (normally already installed at this point)
+sudo port install mupdf
           \end{lstlisting}
     \item To upgrade:
           \begin{lstlisting}
@@ -221,10 +228,12 @@ brew install latexml make
 
 \begin{foldedframe}[Linux Debian-based (Ubuntu, Debian, Mint, etc)]
   Download the package for the latest Ubuntu releases at \url{https://launchpad.net/ubuntu/+source/latexml}. Install \texttt{ghostscript}, \texttt{make}, \texttt{latexmk}, \texttt{dvisvgm}, \texttt{preview-latex-style}, \texttt{texlive-extra-utils} (for \texttt{texfot}), \texttt{zip}, according to your needs.
-  \begin{lstlisting}
+  \begin{lstlisting}[language=bash]
 sudo dpkg -i latexml_0.8.8-1_all.deb
 sudo apt -f install
 sudo apt install ghostscript make latexmk dvisvgm preview-latex-style texlive-extra-utils zip
+# for PDF to SVG conversion (normally already installed at this point)
+sudo apt install mupdf-tools
   \end{lstlisting}
 \end{foldedframe}
 
@@ -250,11 +259,16 @@ module use /apps/linsw1/modulefiles/7/
   \begin{itemize}
     \item Make sure to have \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{AppsAnywhere} installed.
     \item Install Ghostscript, ImageMagick, MiK\TeX{}, StrawberryPerl.
+    \item Open a terminal and install mutool:
+      \begin{lstlisting}
+winget install mutool
+      \end{lstlisting}
     \item Open StrawberryPerl and run:
-          \begin{lstlisting}
+      \begin{lstlisting}
 cpanm --build-args=CC=c++ --notest --verbose Image::Magick
 cpanm --notest --verbose LaTeXML
-        \end{lstlisting}
+      \end{lstlisting}
+    \item
   \end{itemize}
   Everything else should then be available. Re-do all of the above to update. You may have to reinstall the apps every one or two months (open the CloudPaging Player to check their status).
 \end{foldedframe}
@@ -274,6 +288,10 @@ cpanm --notest --verbose LaTeXML
     \end{center}
     Be very careful \textbf{not} to choose 32bit, portable, or static variants.
     \item Install \href{https://www.ghostscript.com/download/gsdnld.html}{Ghostscript} 64bit.
+    \item Open a terminal and install mutool:
+      \begin{lstlisting}
+winget install --scope=machine mutool
+      \end{lstlisting}
     \item In StrawberryPerl, run
           \begin{lstlisting}
 cpanm --build-args=CC=c++ --notest --verbose Image::Magick
@@ -294,7 +312,13 @@ scoop install imagemagick
 scoop install ghostscript
 cpanm --build-args=CC=c++ --notest --verbose Image::Magick
 cpanm --notest --verbose LaTeXML
-    \end{lstlisting}
+  \end{lstlisting}
+
+  For PDF to SVG conversion, run:
+  \begin{lstlisting}
+winget install mutool
+  \end{lstlisting}
+
   Everything else should then be available. Use \cmdinline|scoop update --all| to update.
 \end{foldedframe}
 
@@ -342,9 +366,9 @@ Use \cmdinline|gmake detect| on Windows. You should get something like the follo
   LaTeXML:       & \textcolor{OliveGreen}{0.8.8 OK}                                              \\
   Image::Magick: & \textcolor{red}{NOT FOUND} (required for any image handling)                  \\
   Ghostscript:   & \textcolor{OliveGreen}{9.25 OK} (required for BookML images, EPS to SVG; may be required for PDF to SVG) \\
-  mutool:        & \textcolor{red}{NOT FOUND} (may be required for PDF to SVG)                   \\
-  dvisvgm:       & \textcolor{OliveGreen}{3.4.3 OK} (required for BookML images, EPS/PDF to SVG) \\
-  dvisvgm/libgs: & \textcolor{OliveGreen}{9.25 OK} (required for BookML images, EPS/PDF to SVG)  \\
+  mutool:        & \textcolor{OliveGreen}{1.23.0 OK} (required for PDF to SVG if using PDFTOSVG\_CONVERTER=mutool (current value `mutool')) \\
+  dvisvgm:       & \textcolor{OliveGreen}{3.4.3 OK} (required for BookML images, EPS to SVG, PDF to SVG if using PDFTOSVG\_CONVERTER=dvisvgm (current value `mutool')) \\
+  dvisvgm/libgs: & \textcolor{OliveGreen}{9.25 OK} (required for BookML images, EPS to SVG, PDF to SVG if using PDFTOSVG\_CONVERTER=dvisvgm (current value `mutool'))  \\
   latexmk:       & \textcolor{OliveGreen}{4.87 OK}                                               \\
   texfot:        & \textcolor{OliveGreen}{1.48 OK} (optional, for hiding some LaTeX messages)    \\
   preview.sty:   & \textcolor{OliveGreen}{14.0.6 OK} (required for BookML images)                \\
