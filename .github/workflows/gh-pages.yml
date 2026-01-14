@@ -2,7 +2,7 @@ name: Publish to GitHub Pages
 on:
   push:
     branches:
-      - docs
+      - master
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
