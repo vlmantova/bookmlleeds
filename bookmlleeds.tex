@@ -150,7 +150,7 @@ jobs:
       \end{lstlisting}
       Now synchronize the project with GitHub. \textbf{First time only:} GitHub will ask you to grant permissions to Overleaf to run workflows. Say yes!
     \item GitHub should start compiling all \texttt{.tex} files at the top folder of your Overleaf project that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
-    \item If you `watched' the repository as recommended in the previous steps, you should receive an email in 2-3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
+    \item If you `watched' the repository as recommended in the previous steps, you should receive an email in 2--3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
     \item Every time you want to compile a new version of your Overleaf project, just push the new changes to GitHub.
   \end{itemize}
 \end{foldedframe}
@@ -171,7 +171,7 @@ jobs:
       \end{lstlisting}
       I also recommend that you watch the repository (this is usually automatic when you create a repository; see the `Watch' icon on the repository page, next to `Edit Pins', `Fork', `Star').
     \item GitHub should start compiling all \texttt{.tex} files at the top folder of your repository that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
-    \item If you are watching the repository as recommended in the previous steps, you should receive an email in 2-3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
+    \item If you are watching the repository as recommended in the previous steps, you should receive an email in 2--3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
     \item Every push will start a new compile. If you push frequently, consider tweaking the action to run only when pushing to \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs}{specific branches} or \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-of-specific-tags-occurs}{tags}.
   \end{itemize}
 \end{foldedframe}
@@ -194,7 +194,7 @@ sudo port install gmake LaTeXML
 
       For the remaining prerequisites (such as \texttt{dvisvgm}), add them as you would add any other \TeX{} Live package (for instance using the \TeX{} Live Utility).
 
-      Ghoscript-Extras will include mutool, but if it is still not available on your system and you use PDF images, run
+      Ghostscript-Extras will include mutool, but if it is still not available on your system and you use PDF images, run
       \begin{lstlisting}[language=bash]
 sudo port install mupdf
       \end{lstlisting}
@@ -500,7 +500,7 @@ Please peruse the \href{https://vlmantova.github.io/bookml}{BookML manual} for s
   \item Choose `$\oplus$ Create'.
   \item Choose `SCORM package'.
   \item Choose `Upload SCORM package' and select your \texttt{SCORM.<...>.zip} file.
-  \item Disable `Grade SCORM' and click 'Save'.
+  \item Disable `Grade SCORM' and click `Save'.
 \end{enumerate}
 
 \textbf{Note.} Title and abstract of the file will become title and description of the Minerva entry. A better way to prepare the description is to use
