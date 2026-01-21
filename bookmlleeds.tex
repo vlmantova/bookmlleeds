@@ -254,8 +254,8 @@ module use /apps/linsw1/modulefiles/7/
   Everything else should already be available. Please contact IT if you are still on an old version of \LaTeXML{} (that is, before 0.8.8).
 \end{foldedframe}
 
-\begin{foldedframe}[Windows (AppsAnywhere --- BROKEN)]
-  \textcolor{red}{\textbf{Broken as of January 2026.}} If you already have \LaTeXML{} installed via AppsAnywhere, you can work as usual. New installations and reinstallations are very likely to fail. While we search for the cause of the problem, please use the `without admin' instructions below.
+\begin{foldedframe}[Windows (AppsAnywhere --- easiest)]
+  \textcolor{red}{\textbf{Changed on January 2026.}} Due to an unresolved issue with CloudPaging Player, the instructions below are a little different now.
   \begin{itemize}
     \item Make sure to have \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{AppsAnywhere} installed.
     \item Install Ghostscript, ImageMagick, MiK\TeX{}, StrawberryPerl.
@@ -263,13 +263,17 @@ module use /apps/linsw1/modulefiles/7/
       \begin{lstlisting}
 winget install mutool
       \end{lstlisting}
-    \item Open StrawberryPerl and run:
+    \item Open a terminal, or StrawberryPerl, and run:
+      \begin{lstlisting}
+llw32helper.bat
+      \end{lstlisting}
+      Answer `y' to the first question, and just press Enter on the second question (or choose a different folder if you wish to). Then close and reopen the terminal before continuing.
       \begin{lstlisting}
 cpanm --build-args=CC=c++ --notest --verbose Image::Magick
 cpanm --notest --verbose LaTeXML
-      \end{lstlisting}-
+      \end{lstlisting}
   \end{itemize}
-  Everything else should then be available. Re-do all of the above to update. You may have to reinstall the apps every one or two months (open the CloudPaging Player to check their status).
+  Everything else should then be available. Re-do the \cmdinline|cpanm| steps to update. You may have to reinstall the apps every one or two months (open the CloudPaging Player to check their status).
 \end{foldedframe}
 
 \begin{foldedframe}[Windows (with admin rights)]
@@ -301,8 +305,6 @@ cpanm --notest --verbose LaTeXML
 \end{foldedframe}
 
 \begin{foldedframe}[Windows (without admin rights)]
-  \textcolor{red}{\textbf{Remove Perl installed from AppsAnywhere.}} If you are here because the AppsAnywhere method is failing, please remove Perl from the CloudPaging Player first (open the CloudPaging Player, select StrawberryPerl, and click `Remove').
-
   Install the \href{https://scoop.sh/}{Scoop package manager} (no admin required). Then run:
   \begin{lstlisting}
 scoop install perl
