@@ -267,13 +267,15 @@ winget install mutool
       \begin{lstlisting}
 llw32helper.bat
       \end{lstlisting}
-      Answer `y' to the first question, and just press Enter on the second question (or choose a different folder if you wish to). Then close and reopen the terminal before continuing.
+      Answer `y' to the first question, and just press Enter on the second question (or choose a different folder if you wish to). \textbf{Warning:} running \cmdinline|llw32helper| a second time will ask you about \emph{undoing} what it just did. Only run it once!
+
+      Now close and reopen the terminal and continue with the following.
       \begin{lstlisting}
 cpanm --build-args=CC=c++ --notest --verbose Image::Magick
 cpanm --notest --verbose LaTeXML
       \end{lstlisting}
   \end{itemize}
-  Everything else should then be available. Re-do the \cmdinline|cpanm| steps to update. You may have to reinstall the apps every one or two months (open the CloudPaging Player to check their status).
+  Everything else should then be available. Re-do the \cmdinline|cpanm| steps to update. You may have to reinstall the apps every one or two months (open the CloudPaging Player to check their status), but you will not need to reinstall \LaTeXML{}.
 \end{foldedframe}
 
 \begin{foldedframe}[Windows (with admin rights)]
