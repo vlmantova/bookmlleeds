@@ -1,5 +1,5 @@
 SPLITAT=
-LATEXMLPOSTEXTRAFLAGS=--timestamp=0
+LATEXMLPOSTEXTRAFLAGS=--timestamp=0 --splitnaming=label --nosplit
 
 include bookml/bookml.mk
 

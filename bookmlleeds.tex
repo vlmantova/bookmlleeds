@@ -35,7 +35,7 @@
 \usepackage{enumitem}
 
 \usepackage{tabularx}
-\renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
+% \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
 
 \usepackage{fancyhdr}
 \usepackage{geometry}
@@ -115,8 +115,82 @@ This is a short manual on how to install and run BookML at the University of Lee
 
 \tableofcontents
 
-\section{Installation}
-\subsection{Prerequisites}
+\section{Running BookML via Overleaf and/or GitHub}\label{running-bookml-via-overleaf-and-or-github}
+
+\subsection{Overleaf}\label{overleaf}
+
+\begin{foldedframe}[1.\ Link Overleaf with GitHub]
+  Open your Overleaf \href{https://www.overleaf.com/user/settings}{account settings} and \href{https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization#linking-your-overleaf-account-to-your-github-account}{link your GitHub account} from the `GitHub Sync' entry.
+\end{foldedframe}
+
+\begin{foldedframe}[2.\ Set up a new or existing project]
+  \begin{itemize}
+    \item Open an existing or new Overleaf project and start \href{https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization#creating-a-new-github-repository-from-an-overleaf-project}{synchronizing it with a new GitHub repository}. \textbf{Warning:} choose a repository name without spaces! Inscrutable and hard-to-fix errors will ensue otherwise.
+    \item Visit the repository page and click the `Watch' icon (next to `Edit Pins', `Fork', `Star'). \textbf{If you skip this step, you will not get the emails} with the links to download the compiled files.
+    \item Add the file \texttt{.github/workflows/bookml.yaml} to the project with the following content:
+      \begin{lstlisting}[style=yaml,name=bookml.yaml]
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Compile with BookML
+        uses: vlmantova/bookml-action@v1
+      \end{lstlisting}
+    \item Now synchronize the project with GitHub. GitHub will ask you to grant permissions to Overleaf to run workflows. Say yes! After a few minutes, you will receive an email with the results, provided you `watched' the repository.
+    \item \textbf{Note:} in the default configuration, BookML will try to compile all \texttt{.tex} files at the \textbf{top folder} of your repository that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
+  \end{itemize}
+\end{foldedframe}
+
+\begin{foldedframe}[3.\ Recompile a file]
+  \begin{itemize}
+    \item Simply open the `Integrations' sidebar, click on `GitHub', and push your changes to GitHub.
+    \item If you have `watched' the repository, you will receive an email after a few minutes with the links to download the files, and/or any error messages.
+    \item Otherwise, visit the repository linked to the project and look under the `Actions' tab. Once the latest run completes it will get a green tick or a red cross. Open the run and scroll to the bottom to find where to download the files, and any relevant error messages.
+    \item \textbf{Note:} each run creates a new `release', which you can find under the `Releases' heading on the front page of the repository. Releases will remain available forever unless you intentionally delete them.
+  \end{itemize}
+\end{foldedframe}
+
+\subsection{Directly on GitHub}\label{directly-on-github}
+If you do not use Overleaf, you can still use GitHub to compile your files. This assumes that you already know how to use GitHub, and that you have your \texttt{.tex} files in a GitHub repository.
+
+\begin{foldedframe}[1.\ Set up an existing repository]
+  \begin{itemize}
+    \item Visit the repository page and click the `Watch' icon (next to `Edit Pins', `Fork', `Star'). \textbf{If you skip this step, you will not get the emails} with the links to download the compiled files.
+    \item Add the file \texttt{.github/workflows/bookml.yaml} to the project with the following content:
+      \begin{lstlisting}[style=yaml,name=bookml.yaml]
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Compile with BookML
+        uses: vlmantova/bookml-action@v1
+      \end{lstlisting}
+      Push the new file to GitHub.
+    \item After a few minutes, you will receive an email with the results, provided you `watched' the repository.
+    \item \textbf{Note:} in the default configuration, BookML will try to compile all \texttt{.tex} files at the \textbf{top folder} of your repository that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
+  \end{itemize}
+\end{foldedframe}
+
+
+\begin{foldedframe}[2.\ Recompile a file]
+  \begin{itemize}
+    \item Push your changes to the repository.
+    \item If you have `watched' the repository, you will receive an email after a few minutes with the links to download the files, and/or any error messages.
+    \item Otherwise, visit the repository linked to the project and look under the `Actions' tab. Once the latest run completes it will get a green tick or a red cross. Open the run and scroll to the bottom to find where to download the files, and any relevant error messages.
+    \item \textbf{Note:} each run creates a new `release', which you can find under the `Releases' heading on the front page of the repository. Releases will remain available forever unless you intentionally delete them.
+    \item \textbf{Every push} will start a new compile. If you push frequently, consider tweaking \texttt{bookml.yaml} to run only when pushing to \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs}{specific branches} or \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-of-specific-tags-occurs}{tags}.
+  \end{itemize}
+\end{foldedframe}
+
+
+\section{Running BookML locally}\label{running-bookml-locally}
+\subsection{Prerequisites}\label{prerequisites}
 
 \begin{foldedframe}[Full list of prerequisites]
   \begin{itemize}
@@ -131,50 +205,6 @@ This is a short manual on how to install and run BookML at the University of Lee
 The packages \texttt{latexmk}, \texttt{preview.sty}, \texttt{dvisvgm} and \texttt{texfot} are distributed by MiK\TeX{}, \TeX{} Live, and virtually all Linux distributions.
 
 For the rest of the software, follow the instructions below.
-
-\begin{foldedframe}[Overleaf]
-  \begin{itemize}
-    \item \textbf{First time only.} Open your Overleaf \href{https://www.overleaf.com/user/settings}{account settings} and \href{https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization#linking-your-overleaf-account-to-your-github-account}{link your GitHub account} from the `GitHub Sync' entry.
-    \item Open an existing or new Overleaf project and start \href{https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization#creating-a-new-github-repository-from-an-overleaf-project}{synchronizing it with a new GitHub repository}. The process is smoother when \textbf{the project name has no spaces}. \textbf{Note:} I recommend you immediately visit the new repository and click the `Watch' icon (next to `Edit Pins', `Fork', `Star').
-    \item Finally, add the file \texttt{.github/workflows/bookml.yaml} to the project with the following content:
-      \begin{lstlisting}[style=yaml,name=bookml.yaml]
-on: push
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Compile with BookML
-        uses: vlmantova/bookml-action@v1
-      \end{lstlisting}
-      Now synchronize the project with GitHub. \textbf{First time only:} GitHub will ask you to grant permissions to Overleaf to run workflows. Say yes!
-    \item GitHub should start compiling all \texttt{.tex} files at the top folder of your Overleaf project that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
-    \item If you `watched' the repository as recommended in the previous steps, you should receive an email in 2--3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
-    \item Every time you want to compile a new version of your Overleaf project, just push the new changes to GitHub.
-  \end{itemize}
-\end{foldedframe}
-
-\begin{foldedframe}[GitHub]
-  \begin{itemize}
-    \item Simply add the file \texttt{.github/workflows/bookml.yaml} to your repositories with the following content:
-      \begin{lstlisting}[style=yaml,name=bookml.yaml]
-on: push
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Compile with BookML
-        uses: vlmantova/bookml-action@v1
-      \end{lstlisting}
-      I also recommend that you watch the repository (this is usually automatic when you create a repository; see the `Watch' icon on the repository page, next to `Edit Pins', `Fork', `Star').
-    \item GitHub should start compiling all \texttt{.tex} files at the top folder of your repository that contain the string \ltxinline|\documentclass| (even if commented out!). The work is done by the BookML Docker image, which at the moment contains a full copy of \TeX{} Live 2021.
-    \item If you are watching the repository as recommended in the previous steps, you should receive an email in 2--3 minutes with the download links of all the outputs compiled by BookML and any relevant error messages. If you do not watch the repository, you must visit the repository page yourself and look for new entries under `Releases' (below `About') or open the latest workflow run under the `Action' tab.
-    \item Every push will start a new compile. If you push frequently, consider tweaking the action to run only when pushing to \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs}{specific branches} or \href{https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#running-your-workflow-only-when-a-push-of-specific-tags-occurs}{tags}.
-  \end{itemize}
-\end{foldedframe}
 
 \begin{foldedframe}[macOS (MacPorts)]
   \begin{itemize}
@@ -229,7 +259,7 @@ brew install latexml make
 \begin{foldedframe}[Linux Debian-based (Ubuntu, Debian, Mint, etc)]
   Download the package for the latest Ubuntu releases at \url{https://launchpad.net/ubuntu/+source/latexml}. Install \texttt{ghostscript}, \texttt{make}, \texttt{latexmk}, \texttt{dvisvgm}, \texttt{preview-latex-style}, \texttt{texlive-extra-utils} (for \texttt{texfot}), \texttt{zip}, according to your needs.
   \begin{lstlisting}[language=bash]
-sudo dpkg -i latexml_0.8.8-1_all.deb
+sudo dpkg -i latexml_0.8.8-4_all.deb
 sudo apt -f install
 sudo apt install ghostscript make latexmk dvisvgm preview-latex-style texlive-extra-utils zip
 # for PDF to SVG conversion (normally already installed at this point)
@@ -241,29 +271,29 @@ sudo apt install mupdf-tools
   Not figured out yet!
 \end{foldedframe}
 
-\begin{foldedframe}[Linux School PC (presumably only desktop connected via cable)]
+\begin{foldedframe}[Linux School PC]
   Run the following each time you open a new terminal:
   \begin{lstlisting}
 module load latexml
 module load texlive
-    \end{lstlisting}
+  \end{lstlisting}
   If it does not work, run the following command and try again:
   \begin{lstlisting}
 module use /apps/linsw1/modulefiles/7/
-    \end{lstlisting}
-  Everything else should already be available. Please contact IT if you are still on an old version of \LaTeXML{} (that is, before 0.8.8).
+  \end{lstlisting}
+  Please request IT assistance if you do not have a \texttt{latexml} module, and request an update if you are still on an old version of \LaTeXML{} (that is, before 0.8.8).
 \end{foldedframe}
 
 \begin{foldedframe}[Windows (AppsAnywhere --- easiest)]
-  \textcolor{red}{\textbf{Changed on January 2026.}} Due to an unresolved issue with CloudPaging Player, the instructions below are a little different now.
+  \textcolor{red}{\textbf{Changed on January 2026.}} Due to a subtle (and baffling) issue with CloudPaging Player, the instructions below are a little different now.
   \begin{itemize}
-    \item Make sure to have \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{AppsAnywhere} installed.
+    \item Launch \href{https://appsanywhere.leeds.ac.uk/}{AppsAnywhere} (see \href{https://it.leeds.ac.uk/it?id=kb_article&sysparm_article=KB0014827}{IT Knowledge Base} if you have issues).
     \item Install Ghostscript, ImageMagick, MiK\TeX{}, StrawberryPerl.
     \item Open a terminal and install mutool:
       \begin{lstlisting}
 winget install mutool
       \end{lstlisting}
-    \item Open a terminal, or StrawberryPerl, and run:
+    \item \textbf{Only on first install.} Open a terminal, or StrawberryPerl, and run:
       \begin{lstlisting}
 llw32helper.bat
       \end{lstlisting}
@@ -279,7 +309,6 @@ cpanm --notest --verbose LaTeXML
 \end{foldedframe}
 
 \begin{foldedframe}[Windows (with admin rights)]
-  For University laptops: you can gain admin rights by right-clicking an the installer and choosing ``Request Run as Administrator''.
   \begin{itemize}
     \item Install \href{https://strawberryperl.com/}{StrawberryPerl} \texttt{64bit} version.
     \item Install \href{https://imagemagick.org/script/download.php#windows}{ImageMagick} \texttt{x64-dll}. During installation, enable `Install development headers and libraries for C and C++':
@@ -335,7 +364,7 @@ docker run --rm -i -t -v.:/source ghcr.io/vlmantova/bookml
   Please note that the Docker image includes a full copy of TeX Live 2021.
 \end{foldedframe}
 
-\subsection{BookML}
+\subsection{Adding BookML to a new or existing folder}\label{adding-bookml}
 
 Unzip the \texttt{\href{https://github.com/vlmantova/bookml/releases/latest/download/template.zip}{template.zip} }file from the \href{https://github.com/vlmantova/bookml/releases/latest}{latest BookML release}. Open a terminal in the folder containing \texttt{Makefile}, \texttt{template.tex}, and run
 \begin{lstlisting}[language=bash]
@@ -362,7 +391,7 @@ winget install --id Microsoft.WindowsTerminal -e
 
 Use \cmdinline|gmake detect| on Windows. You should get something like the following:
 
-\begin{tabularx}{\textwidth}[h]{>{\color{MidnightBlue}\tt}r@{\texttt{\ }}>{\tt}X}
+\begin{tabularx}{\textwidth}[t]{>{\color{MidnightBlue}\tt}r@{\texttt{\ }}>{\tt}X}
   Main files:    & \textcolor{OliveGreen}{template.tex}                                          \\
   BookML:        & \textcolor{OliveGreen}{\BookMLversion{} OK}                                   \\
   GNU Make:      & \textcolor{OliveGreen}{4.4.1 OK}                                              \\
@@ -387,9 +416,8 @@ Anything missing will show a red \textcolor{red}{\tt NOT FOUND}. If the version 
 
 \textbf{To update BookML}, run \lstinline|make check-for-update|, then \cmdinline|make update|, simply replace the \texttt{bookml} folder with the content of a newly downloaded \href{https://github.com/vlmantova/bookml/releases/latest/download/release.zip}{\texttt{release.zip}}.
 
-\section{Converting your files}
+\subsection{Converting your files}\label{converting-your-files}
 
-\subsection{How to convert}
 Once your are satisfied that the template is working, drop your own files next to \texttt{template.tex}: each file containing \ltxinline|\documentclass| will be treated the same as \texttt{template.tex}, and will be compiled to PDFs, SCORM and zip packages. Run \cmdinline|make detect| again, and check that `Main files' contains such new files.
 
 There is now a reasonable chance that your files are already working (unless you are using \tikzname, which needs some care), but before your first try, you should truncate your files with an early \ltxinline|\end{document}|, as compilation times can be long and most errors will originate in the preamble anyway.
@@ -455,7 +483,8 @@ make SCORM.lecturenotes.zip
   \end{enumerate}
 \end{foldedframe}
 
-\subsection{Necessary adjustments}
+\section{Adjustments}\label{adjustments}
+\subsection{Minimum recommendations}\label{minimum-recommendations}
 Consult \texttt{template.tex} for the minimal requirements in the preamble (e.g.\ you \textbf{must} provide a \ltxinline|\title| command). You should create copies of \texttt{template-sans.tex}, \texttt{template-sans-large.tex} for each of your main files, at least as a baseline. Alternative versions can be customized and removed, as explained in the next subsection. We recommend offering some alternative versions as good practice.
 
 You should also follow the key requirements below.
@@ -478,7 +507,7 @@ You should also follow the key requirements below.
   \item Using \tikzname{} or \Xy-pic and an old version of \LaTeXML{} (before 0.8.7), or getting misaligned pictures and very long compile times? Use the \ltxinline|bmlimage| feature (see the \href{https://vlmantova.github.io/bookml}{BookML manual} for more info).
 \end{itemize}
 
-\subsection{Alternative formats}
+\subsection{Alternative formats}\label{alternative-formats}
 This is not required, but it is good to be ready to include alternative versions of the PDF as well, for instance a large print version. For instance, add the following to the preamble of \texttt{lecturenotes.tex}:
 \begin{lstlisting}[style=latexml]
 \usepackage{bookml/bookml} % if not already in your preamble
@@ -495,11 +524,11 @@ Consult \texttt{template.tex}, \texttt{template-sans.tex}, \texttt{template-sans
 
 If you instead want \textbf{distinct} SCORM and zip packages, for instance compile a problem sheet both with and without solutions, explore \href{https://github.com/vlmantova/bookml/releases/latest/download/example.zip}{\texttt{example.zip}} to see some possibilities.
 
-\subsection{Other adjustments}
+\subsection{Other adjustments}\label{other-adjustments}
 Please peruse the \href{https://vlmantova.github.io/bookml}{BookML manual} for several suggestions, ranging from how to write foldable environments, embed videos and animations, deal with very slow or broken \tikzname{} pictures, and so on.
 
-\section{Uploading to Minerva}
-\subsection{SCORM packages}
+\section{Uploading to Minerva}\label{uploading-to-minerva}
+\subsection{SCORM packages}\label{scorm-packages}
 \begin{enumerate}
   \item On the front page of your module, under `Module content', click the $\oplus$ button where you want to insert your item.
   \item Choose `$\oplus$ Create'.
@@ -515,7 +544,7 @@ Please peruse the \href{https://vlmantova.github.io/bookml}{BookML manual} for s
   \end{lstlisting}
 You will be able to edit the Minerva details right after uploading, if necessary.
 
-\subsection{Plain ZIP packages}
+\subsection{Plain ZIP packages}\label{plain-zip-packages}
 For the initial permission setup, as well as screenshots of the entire process, consult \href{https://leeds365.sharepoint.com/sites/Maths-TeachingStaffOnly/SitePages/Creating-accessible-content-and-uploading-HTML.aspx}{Chris' guide}.
 
 Below is a summary of the day-to-day upload process, once permissions have been set up:
@@ -528,7 +557,7 @@ Below is a summary of the day-to-day upload process, once permissions have been 
   \item Click `Submit', the choose `index.html' as file to be presented on Minerva.
 \end{enumerate}
 
-\section{Some examples}
+\section{Some examples}\label{some-examples}
 
 \begin{figure}[hb]
   \begin{center}
@@ -574,7 +603,7 @@ Below is a summary of the day-to-day upload process, once permissions have been 
     \bmlDescription{To compute 2+3, add a copy of the well ordered set 3 after the well ordered set 2, and note that the result is isomorphic to the well ordered set 5.}
   \end{center}
   \caption{Ordinal sum of $2$ and $3$ generated in two ways: first via `bmlimage', then directly by \LaTeXML{}. The latter uses MathJax for the embedded formulas, resulting in improved accessibility but minor alignment issues.}
-  \label{fig:tikz-example}
+  \label{tikz-example}
 \end{figure}
 
 \begin{figure}[hb]
@@ -595,7 +624,7 @@ Below is a summary of the day-to-day upload process, once permissions have been 
     \bmlDescription{A, B, C drawn in a triangle with C under B, an arrow labelled phi from A to B and an arrow from A to C}
   \end{center}
   \caption{Example of tikzcd diagram, again generated in two ways via `bmlimage' and directly by \LaTeXML{}.}
-  \label{fig:tikzcd-example}
+  \label{tikzcd-example}
 \end{figure}
 
 \begin{figure}[hb]
@@ -615,7 +644,7 @@ Below is a summary of the day-to-day upload process, once permissions have been 
     \bmlDescription{A, B, C drawn in a triangle with C under B, an arrow labelled phi from A to B and an arrow from A to C}
   \end{center}
   \caption{Example of \Xy-matrix diagram processed using \texttt{bmlimage}.}
-  \label{fig:xymatrix-example}
+  \label{xymatrix-example}
 \end{figure}
 \begin{figure}
   \[ \xymatrix{
@@ -645,7 +674,7 @@ Below is a summary of the day-to-day upload process, once permissions have been 
       Watch \href{https://www.youtube.com/watch?v=#1}{#2}}
     \youtube{pTqBXcUPDug?si=tfkXijIyz4dgB38Z}{SCORM upload to Blackboard Learn Ultra}
   \end{quote}
-  \label{fig:embed-stream}
+  \label{embed-youtube-example}
   \caption{How to embed a video. Note that the \LaTeX{} special characters are preceeded by a backslash or the output may be invalid.}
 \end{figure}
 
@@ -668,7 +697,7 @@ Below is a summary of the day-to-day upload process, once permissions have been 
     \hline
   \end{tabularx}
   \caption{Mark a table row as header. Read the content of \href{https://github.com/brucemiller/LaTeXML/blob/master/lib/LaTeXML/texmf/latexml.sty}{\texttt{latexml.sty}} for more table-related commands.}
-  \label{fig:table}
+  \label{table-example}
 \end{figure}
 
 \end{document}
